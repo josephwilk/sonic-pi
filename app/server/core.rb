@@ -54,7 +54,7 @@ module OSC
           read_all = false
           osc_data = ""
           while(!read_all) do
-            osc_data += socket.recv(16384)
+            osc_data << socket.recv(16384)
             read_all = true if osc_data[-1] == "\x00"
           end
 
