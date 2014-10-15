@@ -87,10 +87,6 @@ module OSC
       start_detector
     end
 
-    def stop
-      @socket.close
-    end
-
     def add_method( address_pattern, &proc )
       matcher = AddressPattern.new( address_pattern )
 
