@@ -525,7 +525,7 @@ void MainWindow::initWorkspace(QsciScintilla* ws) {
 
 void MainWindow::startOSCListener() {
   std::cout << "starting OSC Server" << std::endl;
-  int PORT_NUM = 4558;
+  int PORT_NUM = 4559;
   TcpSocket sock;
   sock.bindTo(PORT_NUM);
   std::cout << "Listening on port 4558" << std::endl;
@@ -811,7 +811,7 @@ bool MainWindow::saveAs()
  void MainWindow::sendOSC(Message m)
 {
   TcpSocket sock;
-  int PORT_NUM = 4557;
+  int PORT_NUM = 4558;
   sock.connectTo("localhost", PORT_NUM);
   if (!sock.isOk()) {
     std::cerr << "Error connection to port " << PORT_NUM << ": " << sock.errorMessage() << "\n";

@@ -26,14 +26,15 @@ require 'multi_json'
 
 include SonicPi::Util
 
-server_port = ARGV[0] ? ARGV[0].to_i : 4557
-client_port = ARGV[1] ? ARGV[1].to_i : 4558
+server_port = ARGV[0] ? ARGV[0].to_i : 4558
+client_port = ARGV[1] ? ARGV[1].to_i : 4559
 
 ws_out = Queue.new
 osc_server = OSC::ServerOverTcp.new(server_port)
 proxy = OSC::ClientOverTcp.new("localhost", client_port)
 
 at_exit do
+  osc_server.stop
   proxy.send(OSC::Message.new("/exited"))
 end
 
@@ -45,7 +46,7 @@ klass.send(:include, user_methods)
 klass.send(:include, SonicPi::SpiderAPI)
 #klass.send(:include, SonicPi::Mods::SPMIDI)
 klass.send(:include, SonicPi::Mods::Sound)
-sp =  klass.new "localhost", 4556, ws_out, 5, user_methods
+sp =  klass.new "localhost", 4557, ws_out, 5, user_methods
 
 osc_server.add_method("/run-code") do |payload|
   begin
