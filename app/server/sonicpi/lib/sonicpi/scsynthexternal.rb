@@ -153,7 +153,7 @@ module SonicPi
       p = Promise.new
       connected = false
 
-      boot_s = OSC::Server.new(5998)
+      boot_s = OSC::ServerOverTcp.new(5998)
       boot_s.add_method '*' do |m|
         p.deliver! true unless connected
         connected = true
@@ -212,7 +212,7 @@ module SonicPi
           # Send a command to start the server and let it fail with the 'input and output sample rates do not match' error
           # On the next boot it will have reset the sample rates and will start properly
           log "WARNING: input and output sample rates do not match. Trying to start SuperCollider again. See the following message:"
-          sc_boot_msg = `'#{scsynth_path}' -a #{num_audio_busses_for_current_os}-u #{@port} -m 131072 -S #{osx_output_sample_rate} &`
+          sc_boot_msg = `'#{scsynth_path}' -a #{num_audio_busses_for_current_os} -t #{@port} -m 131072 -S #{osx_output_sample_rate} &`
           log sc_boot_msg
         end
       rescue
@@ -220,7 +220,7 @@ module SonicPi
       end
 
       boot_and_wait do
-        raise unless system("'#{scsynth_path}' -a #{num_audio_busses_for_current_os} -u #{@port} -m 131072 &")
+        raise unless system("'#{scsynth_path}' -a #{num_audio_busses_for_current_os} -t #{@port} -m 131072 &")
       end
     end
 
@@ -229,7 +229,7 @@ module SonicPi
       log_boot_msg
       log "Booting on Windows"
       boot_and_wait do
-        @scsynthpid = Process.spawn(scsynth_path, "-u", @port.to_s, "-a", num_audio_busses_for_current_os.to_s)
+        @scsynthpid = Process.spawn(scsynth_path, "-t", @port.to_s, "-a", num_audio_busses_for_current_os.to_s)
         Process.detach(@scsynthpid)
       end
     end
@@ -249,7 +249,7 @@ module SonicPi
       @jack_pid = `ps cax | grep jackd`.split(" ").first
 
       boot_and_wait do
-        system("scsynth -u #{@port} -m 131072 -a #{num_audio_busses_for_current_os} &")
+        system("scsynth -t #{@port} -m 131072 -a #{num_audio_busses_for_current_os} &")
       end
 
       `jack_connect SuperCollider:out_1 system:playback_1`
@@ -277,7 +277,7 @@ module SonicPi
       end
 
       boot_and_wait do
-        system("scsynth -u #{@port} -m 131072 -a #{num_audio_busses_for_current_os} &")
+        system("scsynth -t #{@port} -m 131072 -a #{num_audio_busses_for_current_os} &")
       end
 
       `jack_connect SuperCollider:out_1 system:playback_1`

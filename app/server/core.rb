@@ -119,6 +119,37 @@ private
 
 
   end
+
+
+  class ClientOverTcp
+    def initialize(host, port)
+      connected = false
+      while(!connected) do
+        begin
+          @so = TCPSocket.new(host, port)
+        rescue
+          puts $!
+          sleep(1)
+        end
+        connected = true if @so
+      end
+
+#      @host = host
+  #    @port = port
+      #@so.connect(host, port)
+    end
+
+    def send(mesg)
+      puts "LETS SEND #{mesg.encode}"
+
+
+
+      puts "AND SEND"
+      @so.send(mesg.encode, 0)
+      @so.close
+    end
+  end
+
 end
 
 

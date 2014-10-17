@@ -526,7 +526,7 @@ void MainWindow::initWorkspace(QsciScintilla* ws) {
 void MainWindow::startOSCListener() {
   std::cout << "starting OSC Server" << std::endl;
   int PORT_NUM = 4558;
-  UdpSocket sock;
+  TcpSocket sock;
   sock.bindTo(PORT_NUM);
   std::cout << "Listening on port 4558" << std::endl;
   if (!sock.isOk()) {
@@ -537,10 +537,15 @@ void MainWindow::startOSCListener() {
     osc_incoming_port_open = true;
     while (sock.isOk() && cont_listening_for_osc) {
 
-      if (sock.receiveNextPacket(30 /* timeout, in ms */)) {
+      std::cout << "Attempt to receive something, should block" << std::endl;
+      if (sock.receiveNext(30 /* timeout, in ms */)) {
+          std::cout << "Oh shit we got something" << std::endl;
+
         pr.init(sock.packetData(), sock.packetSize());
         oscpkt::Message *msg;
         while (pr.isOk() && (msg = pr.popMessage()) != 0) {
+            std::cout << "Try and match" << std::endl;
+
 
 
           if (msg->match("/multi_message")){

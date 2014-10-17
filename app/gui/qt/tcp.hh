@@ -197,6 +197,10 @@ struct TcpSocket {
          OPTION_DEFAULT=OPTION_FORCE_IPV4 // according to liblo's README, using ipv6 sockets causes issues with other non-ipv6 enabled osc software
   };
 
+  bool bindTo(int port, int options = OPTION_DEFAULT) {
+    return openServerSocket("", port, options);
+  }
+
   bool connectTo(const std::string &host, const std::string &port, int options = OPTION_DEFAULT) {
     return openSocket(host, port, options);
   }
@@ -211,6 +215,79 @@ struct TcpSocket {
   void *packetData() { return buffer.empty() ? 0 : &buffer[0]; }
   size_t packetSize() { return buffer.size(); }
   TcpSockAddr &packetOrigin() { return remote_addr; }
+
+
+  bool receiveNext(int timeout_ms = -1) {
+    if (!isOk() || sockfd == -1) { setErr("not opened.."); return false; }
+
+    /* 128k seems to be a reasonable value -- on linux, the max
+       datagram size appears to be a little bit less than 65536 */
+    buffer.resize(1024*128);
+
+  //accept(sockfd, (struct sockaddr *) &cli_addr, &clilen);
+//  res = send(sockfd, (const char*)ptr + sent, bytesleft, 0);
+
+    /* check if something is available */
+//    if (timeout_ms >= 0) {
+//      struct timeval tv; memset(&tv, 0, sizeof tv);
+//      tv.tv_sec=timeout_ms/1000;
+//      tv.tv_usec=(timeout_ms%1000) * 1000;
+
+//      //gettimeofday(&tv, 0); //tv.tv_usec += timeout_ms*1000;
+
+//      fd_set readset;
+//      FD_ZERO(&readset);
+//      FD_SET(sockfd, &readset);
+//      //int ret = select( handle+1, &readset, 0, 0, &tv );
+//      int ret = select( sockfd+1, &readset, 0, 0, &tv );
+//      if (ret <= 0) { // error, or timeout
+//        return false;
+//      }
+//    }
+
+    socklen_t len = (socklen_t)remote_addr.maxLen();
+    std::cout << "Awaiting connection" << std::endl;
+    int connectionfd = accept(sockfd, &remote_addr.addr(), &len);
+
+    std::cout << "We got a connection"<< std::endl;
+
+    int nread = recv(connectionfd, &buffer[0], (int)buffer.size(), 0);
+
+    std::cout << "Read"<<  nread << std::endl;
+
+     if (nread < 0) {
+       // maybe here we should differentiate EAGAIN/EINTR/EWOULDBLOCK from real errors
+ #ifdef WIN32
+       if (WSAGetLastError() != WSAEINTR && WSAGetLastError() != WSAEWOULDBLOCK &&
+           WSAGetLastError() != WSAECONNRESET && WSAGetLastError() != WSAECONNREFUSED) {
+         char s[512];
+ #ifdef _MSC_VER
+         _snprintf_s(s,512,512, "system error #%d", WSAGetLastError());
+ #else
+         snprintf(s,512, "system error #%d", WSAGetLastError());
+ #endif
+         setErr(s);
+       }
+ #else
+       if (errno != EAGAIN && errno != EINTR && errno != EWOULDBLOCK &&
+           errno != ECONNRESET && errno != ECONNREFUSED) {
+         setErr(strerror(errno));
+       }
+ #endif
+
+      if (!isOk()) close();
+       return false;
+     }
+//     if (nread > (int)buffer.size()) {
+//       /* no luck... a large datagram arrived and we truncated it.. now it is too late */
+//       buffer.clear();
+//     } else {
+       buffer.resize(nread);
+       std::vector<char> tmp(buffer); tmp.swap(buffer);
+//     }
+    return true;
+  }
+
 
   bool sendPacket(const void *ptr, size_t sz) {
     if (!isOk() || sockfd == -1) { setErr("not opened.."); return false; }
@@ -237,6 +314,76 @@ struct TcpSocket {
   }
 
 private:
+  bool openServerSocket(const std::string &hostname, int port, int options) {
+    char port_string[64];
+#ifdef _MSC_VER
+    _snprintf_s(port_string, 64, 64, "%d", port);
+#else
+    snprintf(port_string, 64, "%d", port);
+#endif
+    return openServerSocket(hostname, port_string, options);
+  }
+
+  bool openServerSocket(const std::string &hostname, const std::string &port, int options) {
+    bool binding = hostname.empty();
+    close(); error_message.clear();
+
+    struct addrinfo hints;
+    struct addrinfo *result = 0, *rp = 0;
+
+    memset(&hints, 0, sizeof(struct addrinfo));
+    if (options == OPTION_FORCE_IPV4) hints.ai_family = AF_INET;
+    else if (options == OPTION_FORCE_IPV6) hints.ai_family = AF_INET6;
+    else hints.ai_family = AF_UNSPEC;    /* Allow IPv4 or IPv6 -- in case of problem, try with AF_INET ...*/
+    hints.ai_socktype = SOCK_STREAM; /* TCP socket */
+    hints.ai_flags = (binding ? AI_PASSIVE : 0);    /* AI_PASSIVE means socket address is intended for bind */
+
+    int err = 0;
+
+    err = getaddrinfo(binding ? 0 : hostname.c_str(), port.empty() ? 0 : port.c_str(), &hints, &result);
+    if (err != 0) {
+      setErr(gai_strerror(err));
+      return false;
+    }
+
+    for (rp = result; rp && sockfd==-1; rp = rp->ai_next) {
+      sockfd = socket(rp->ai_family, rp->ai_socktype, rp->ai_protocol);
+      if (sockfd == -1)
+        continue;
+
+      if (bind(sockfd, rp->ai_addr, (socklen_t)rp->ai_addrlen) != 0) {
+        close();
+      } else {
+        listen(sockfd,5);
+
+        assert((size_t)rp->ai_addrlen <= sizeof remote_addr);
+        memcpy(&remote_addr.addr(), rp->ai_addr, rp->ai_addrlen);
+        break;
+      }
+
+        std::cout << "Listening" << std::endl;
+
+
+
+      // if(connect(sockfd, rp->ai_addr, (socklen_t)rp->ai_addrlen)!=0){
+      //   std::cout << "Failed connecting to Server" << std::endl;
+      //   close();
+      // } else {
+//      assert((size_t)rp->ai_addrlen <= sizeof remote_addr);
+  //    memcpy(&remote_addr.addr(), rp->ai_addr, rp->ai_addrlen);
+    //  break;
+      // }
+    }
+
+    freeaddrinfo(result); result = 0;
+
+    if (!rp) { // we failed miserably
+      setErr(binding ? "bind failed" : "connect failed"); assert(sockfd == -1);
+      return false;
+    }
+    return true;
+  };
+
   bool openSocket(const std::string &hostname, int port, int options) {
     char port_string[64];
 #ifdef _MSC_VER

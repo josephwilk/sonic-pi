@@ -31,7 +31,7 @@ client_port = ARGV[1] ? ARGV[1].to_i : 4558
 
 ws_out = Queue.new
 osc_server = OSC::ServerOverTcp.new(server_port)
-proxy = OSC::Client.new("localhost", client_port)
+proxy = OSC::ClientOverTcp.new("localhost", client_port)
 
 at_exit do
   proxy.send(OSC::Message.new("/exited"))
