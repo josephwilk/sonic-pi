@@ -39,6 +39,7 @@ at_exit do
   osc_server.stop
   m = encoder.encode_single_message("/exited")
   proxy.send_raw(m)
+  proxy.stop
 end
 
 user_methods = Module.new
