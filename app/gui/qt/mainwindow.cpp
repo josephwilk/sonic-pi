@@ -63,6 +63,9 @@
 #include "sonicpiapis.h"
 #include "sonicpiscintilla.h"
 
+#include <QtNetwork>
+#include <QTcpSocket>
+
 // OSC stuff
 #include "oscpkt.hh"
 #include "udp.hh"
@@ -102,6 +105,11 @@ MainWindow::MainWindow(QApplication &app, QSplashScreen &splash) {
 
   osc_thread = QtConcurrent::run(this, &MainWindow::startOSCListener);
   serverProcess = new QProcess();
+
+  clientSock = new QTcpSocket();
+  int PORT_NUM = 4557;
+
+  clientSock->connectToHost("localhost", PORT_NUM);
 
 #if defined(Q_OS_WIN)
   QString prg_path = "ruby.exe";
@@ -810,15 +818,14 @@ bool MainWindow::saveAs()
 
  void MainWindow::sendOSC(Message m)
 {
-  int PORT_NUM = 4557;
-  clientSock.connectTo("localhost", PORT_NUM);
-
-  if (!clientSock.isOk()) {
-    std::cerr << "Client gone away: " << clientSock.errorMessage() << "\n";
+  int r = clientSock->waitForConnected(8000);
+  std::cout <<  "connection->" << r << " " << clientSock->state() << "\n";
+  if(clientSock->state() == QAbstractSocket::ConnectedState){
+      PacketWriter pw;
+      pw.addMessage(m);
+      clientSock->write(pw.packetData());
   } else {
-    PacketWriter pw;
-    pw.addMessage(m);
-    clientSock.sendPacket(pw.packetData(), pw.packetSize());
+       std::cerr << "Client gone away: " << "\n";
   }
 }
 
@@ -1424,7 +1431,7 @@ void MainWindow::onExitCleanup()
   }
   osc_thread.waitForFinished();
   std::cout << "Exiting..." << std::endl;
-  clientSock.close();
+  clientSock->close();
 }
 
 void MainWindow::updateDocPane(QListWidgetItem *cur) {

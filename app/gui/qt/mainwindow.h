@@ -26,6 +26,7 @@
 #include <QFuture>
 #include <QShortcut>
 #include <QHash>
+#include <QTcpSocket>
 #include "oscpkt.hh"
 #include "tcp.hh"
 #include "udp.hh"
@@ -142,7 +143,7 @@ private:
 
     QFuture<void> osc_thread;
 
-    oscpkt::TcpSocket clientSock;
+    QTcpSocket *clientSock;
     bool cont_listening_for_osc;
     bool server_started;
     bool osc_incoming_port_open;
