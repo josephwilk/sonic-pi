@@ -537,22 +537,33 @@ void MainWindow::initWorkspace(SonicPiScintilla* ws) {
 
 void MainWindow::startOSCListener() {
   int PORT_NUM = 4558;
-  TcpSocket sock;
+  int TIMEOUT = 30000;
+  QTcpServer *serverSock = new QTcpServer();
   std::cout << "Starting OSC Server Listening on:" << PORT_NUM << std::endl;
 
-  sock.bindTo(PORT_NUM);
+  if(!serverSock-> listen(QHostAddress::LocalHost, PORT_NUM)){
+    std::cerr << "Could not listen on:" << PORT_NUM << std::endl;
+    return;
+  }
 
-  if (!sock.isOk()) {
+  if(!serverSock->waitForNewConnection(TIMEOUT)){
+      std::cerr << "No clients found:" << PORT_NUM << std::endl;
+      return;
+  }
+  QTcpSocket *sock = serverSock->nextPendingConnection();
+
+  if (!sock->isValid()) {
     std::cerr << "Unable to listen to OSC messages on port" << PORT_NUM << std::endl;
   } else {
     PacketReader pr;
     PacketWriter pw;
     osc_incoming_port_open = true;
-    while (sock.isOk() && cont_listening_for_osc) {
-      if (sock.receiveNext()) {
-        pr.init(sock.packetData(), sock.packetSize());
-        oscpkt::Message *msg;
 
+    while (sock->isValid() && cont_listening_for_osc) {
+       if (sock->waitForReadyRead(TIMEOUT)) {
+            QByteArray inData = sock->readAll();
+            pr.init(inData, inData.size());
+            oscpkt::Message *msg;
         while (pr.isOk() && (msg = pr.popMessage()) != 0) {
           if (msg->match("/multi_message")){
             int msg_count;
@@ -724,7 +735,8 @@ void MainWindow::startOSCListener() {
     }
   }
   std::cout << "OSC Stopped, releasing socket" << std::endl;
-  sock.close();
+  serverSock->close();
+  sock->close();
 }
 
 void MainWindow::replaceBuffer(QString id, QString content) {

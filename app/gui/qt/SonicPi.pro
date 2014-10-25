@@ -39,11 +39,10 @@ SOURCES += main.cpp \
 
 HEADERS  += mainwindow.h \
             oscpkt.hh \
-            tcp.hh \
-            udp.hh \
             sonicpilexer.h \
             sonicpiapis.h \
-            sonicpiscintilla.h
+            sonicpiscintilla.h \
+            client.h
 
 OTHER_FILES += \
     images/copy.png \
