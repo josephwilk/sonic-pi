@@ -107,9 +107,7 @@ MainWindow::MainWindow(QApplication &app, QSplashScreen &splash) {
   serverProcess = new QProcess();
 
   clientSock = new QTcpSocket();
-  int PORT_NUM = 4557;
 
-  clientSock->connectToHost("localhost", PORT_NUM);
 
 #if defined(Q_OS_WIN)
   QString prg_path = "ruby.exe";
@@ -818,12 +816,30 @@ bool MainWindow::saveAs()
 
  void MainWindow::sendOSC(Message m)
 {
-  int r = clientSock->waitForConnected(8000);
-  std::cout <<  "connection->" << r << " " << clientSock->state() << "\n";
+  int TIMEOUT = 30000;
+  int PORT_NUM = 4557;
+
+  if (clientSock->state() != QAbstractSocket::ConnectedState){
+    std::cout<<  "Connecting" << "\n";
+    clientSock->connectToHost("localhost", PORT_NUM,  QIODevice::ReadWrite);
+  }
+
+  if(!clientSock->waitForConnected(TIMEOUT)){
+    std::cerr <<  "Timeout, could not connect" << "\n";
+    clientSock->abort();
+    return;
+  }
+
   if(clientSock->state() == QAbstractSocket::ConnectedState){
       PacketWriter pw;
       pw.addMessage(m);
-      clientSock->write(pw.packetData());
+      int bytesWritten = clientSock->write(pw.packetData(), pw.packetSize());
+      clientSock->waitForBytesWritten();
+
+      if (bytesWritten < 0){
+          std::cerr <<  "Failed to send bytes" << "\n";
+      }
+
   } else {
        std::cerr << "Client gone away: " << "\n";
   }
