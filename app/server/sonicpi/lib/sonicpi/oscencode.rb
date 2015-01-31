@@ -137,4 +137,16 @@ module SonicPi
       [t1, t2].pack('N2')
     end
   end
+
+  class StreamOscEncode < OscEncode
+    def encode_single_message(address, args=[])
+      message = super
+      ([message.length].pack('N') << message).force_encoding("BINARY")
+    end
+
+    def encode_single_bundle(ts, address, args=[])
+      message = super
+      message.count.pack('N') << message
+    end
+  end
 end
