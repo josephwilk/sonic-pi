@@ -14,6 +14,7 @@ SonicPiTCPServer::SonicPiTCPServer(MainWindow *sonicPiWindow, OscHandler *oscHan
 {
     tcpServer = new QTcpServer(sonicPiWindow);
     buffer.clear();
+    blockSize = 0;
 
     connect(tcpServer, SIGNAL(newConnection()), this, SLOT(client()));
 }
