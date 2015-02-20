@@ -26,6 +26,7 @@ void SonicPiTCPServer::startServer(){
       handler->server_started = true;
     }
     else{
+      tcpServer->close();
       qDebug() << "Server: not started!";
     }
 
