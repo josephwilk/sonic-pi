@@ -48,12 +48,12 @@ void SonicPiTCPServer::client(){
 
 void SonicPiTCPServer::readMessage()
 {
-    QDataStream in(socket);
     if (blockSize == 0) {
         if (socket->bytesAvailable() < (int)sizeof(quint32)){
             return;
         }
-        in >> blockSize;
+        socket->read((char *)&blockSize, sizeof(quint32));
+        blockSize = qToBigEndian(blockSize);
     }
 
     qDebug() << "Blocksize: " << blockSize << "";
@@ -65,6 +65,8 @@ void SonicPiTCPServer::readMessage()
     buffer.resize(blockSize);
     int bytesRead = socket->read(&buffer[0], blockSize);
     if(bytesRead < 0) {
+    if(bytesRead < 0 || bytesRead != blockSize) {
+      qDebug() << "Error: read: " << bytesRead << " Expected:" << blockSize;
       blockSize = 0;
       return;
     }
