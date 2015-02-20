@@ -381,7 +381,7 @@ void MainWindow::waitForServiceSync() {
     return;
   }
 
-  QMetaObject::invokeMethod(this, "serverStarted", Qt::QueuedConnection); }
+}
 
 void MainWindow::splashClose() {
 #if defined(Q_OS_MAC)

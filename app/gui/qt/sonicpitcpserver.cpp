@@ -39,6 +39,10 @@ void SonicPiTCPServer::logError(QAbstractSocket::SocketError e){
 }
 
 void SonicPiTCPServer::client(){
+
+    //In TCP we have no ack signal as we don't block the main loop.
+    //Hence assume if we get a connection from a client its booted and ready.
+    QMetaObject::invokeMethod(parent, "serverStarted", Qt::QueuedConnection);
     socket = tcpServer->nextPendingConnection();
     connect(socket, SIGNAL(readyRead()), this, SLOT(readMessage()));
     connect(socket, SIGNAL(error(QAbstractSocket::SocketError)), this, SLOT(logError(QAbstractSocket::SocketError)));
