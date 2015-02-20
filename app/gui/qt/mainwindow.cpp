@@ -720,7 +720,8 @@ void MainWindow::sendOSC(Message m)
     if(clientSock->state() == QAbstractSocket::ConnectedState){
       PacketWriter pw;
       pw.addMessage(m);
-      int bytesWritten = clientSock->write(pw.packetData(), pw.packetSize());
+      qDebug() << "Send:" << pw.packetSize();
+      int bytesWritten = clientSock->write(pw.packetDataForStream(), pw.packetSize()+sizeof(uint32_t));
       clientSock->waitForBytesWritten();
 
       if (bytesWritten < 0){

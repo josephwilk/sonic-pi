@@ -170,16 +170,22 @@ module OSC
           while(!read_all) do
             readfds, _, _ = select([@so], nil, nil, 0.1)
             if readfds
-              result = @so.recv(16384)
-              puts result
-              if result != ""
-                osc_data << result
-                read_all = (result[-1] == "\x00")
-              else
-                puts "Connection closed by client"
-                @so.close
-                @so = nil
-                break
+              packet_size = @so.recv(4)
+              packet_size.force_encoding("BINARY")
+              size = packet_size.unpack('N')[0]
+
+              if size && size > 0
+                puts "size: #{size}"
+                result = @so.recv(size)
+                if result != ""
+                  osc_data = result
+                  read_all = true
+                else
+                  puts "Connection closed by client"
+                  @so.close
+                  @so = nil
+                  break
+                end
               end
             end
           end
