@@ -64,7 +64,6 @@ void SonicPiTCPServer::readMessage()
 
     buffer.resize(blockSize);
     int bytesRead = socket->read(&buffer[0], blockSize);
-    if(bytesRead < 0) {
     if(bytesRead < 0 || bytesRead != blockSize) {
       qDebug() << "Error: read: " << bytesRead << " Expected:" << blockSize;
       blockSize = 0;
