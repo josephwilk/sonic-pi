@@ -378,7 +378,16 @@ MainWindow::MainWindow(QApplication &app, bool i18n, QSplashScreen* splash)
   createShortcuts();
   createToolBar();
   createStatusBar();
-  createInfoPane();
+
+  infoFiles = new QStringList();
+  infoFiles->append(":/html/info.html");
+  infoFiles->append(":/info/CORETEAM.html");
+  infoFiles->append(":/info/CONTRIBUTORS.html");
+  infoFiles->append(":/info/COMMUNITY.html");
+  infoFiles->append(":/info/LICENSE.html");
+  infoFiles->append(":/info/CHANGELOG.html");
+
+  createInfoPane(infoFiles);
 
   readSettings();
 
@@ -1227,23 +1236,31 @@ void MainWindow::changeTheme(){
     QString paneColor = currentTheme->color("PaneBackground").name();
     QString windowBorder = currentTheme->color("WindowBorder").name();
 
-    this->setStyleSheet(QString("QScrollBar::add-line:horizontal, QScrollBar::add-line:vertical {border: 0px;} QScrollBar::sub-line:horizontal,QScrollBar::sub-line:vertical{border:0px;} QScrollBar:horizontal, QScrollBar:vertical{background-color: #222; border: 1px solid #000;} QScrollBar::handle:horizontal,QScrollBar::handle:vertical { background: %1;  border-radius: 5px; min-width: 80%;} QMainWindow::separator{border: 1px solid %2;} QMainWindow{background-color: %1; color: %3}; QFrame{border: 1px solid %2;}").arg(windowColor, windowBorder, windowForegroundColor));
-    statusBar()->setStyleSheet(QString("QStatusBar{background-color: %1; border-top: 1px solid %2;}").arg(windowColor, windowBorder));
+    QString scrollStyling =     QString("QScrollBar::add-line:horizontal, QScrollBar::add-line:vertical {border: 0px;} QScrollBar::sub-line:horizontal,QScrollBar::sub-line:vertical{border:0px;} QScrollBar:horizontal, QScrollBar:vertical{background-color: #222; border: 1px solid #000;} QScrollBar::handle:horizontal,QScrollBar::handle:vertical { background: %1;  border-radius: 5px; min-width: 80%;}").arg(windowColor);
 
-    outputPane->setStyleSheet(QString("QTextEdit{background-color: %1; color: %2; border: 0px;}").arg(paneColor, windowForegroundColor));
+    this->setStyleSheet(        QString(scrollStyling + "QMainWindow::separator{border: 1px solid %2;} QMainWindow{background-color: %1; color: %3}; QFrame{border: 1px solid %2;}").arg(windowColor, windowBorder, windowForegroundColor));
+    statusBar()->setStyleSheet( QString("QStatusBar{background-color: %1; border-top: 1px solid %2;}").arg(windowColor, windowBorder));
+    outputPane->setStyleSheet(  QString("QTextEdit{background-color: %1; color: %2; border: 0px;}").arg(paneColor, windowForegroundColor));
     outputWidget->setStyleSheet(QString("QDockWidget::title{color: %3; border-bottom: 1px solid %2; text-align: center; background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 %1, stop: 1.0 #1c2529);}").arg(windowColor, windowBorder, windowForegroundColor));
-    prefsWidget->setStyleSheet(QString("QGroupBox{font-size: 11px; color: %3} QDockWidget::title{font: bold 2px; color: %3; border-bottom: 1px solid %2; text-align: center; background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 %1, stop: 1.0 #1c2529);}").arg(windowColor, windowBorder, windowForegroundColor));
-    tabs->setStyleSheet(QString("QTabBar::tab{background: #1c2529; color: %1;} QTabBar::tab:selected{background: #0b1418}").arg(windowForegroundColor));
+    prefsWidget->setStyleSheet( QString("QGroupBox{font-size: 11px; color: %3} QDockWidget::title{font: bold 2px; color: %3; border-bottom: 1px solid %2; text-align: center; background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 %1, stop: 1.0 #1c2529);}").arg(windowColor, windowBorder, windowForegroundColor));
+    tabs->setStyleSheet(        QString("QTabBar::tab{background: #1c2529; color: %1;} QTabBar::tab:selected{background: #0b1418}").arg(windowForegroundColor));
+    docsCentral->setStyleSheet( QString("QTabBar::tab{background: #1c2529; color: %1;} QTabBar::tab:selected{background: #0b1418}").arg(windowForegroundColor));
+    docWidget->setStyleSheet(   QString("QDockWidget QListView {color: %4; background-color: %2;} QDockWidget::title{color: %4; border-bottom: 1px solid %3; text-align: center; background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 %1, stop: 1.0 #1c2529);}").arg(windowColor,paneColor, windowBorder, windowForegroundColor));
+    docPane->setStyleSheet(     QString("QTextBrowser { selection-color: white; selection-background-color: deeppink; padding-left:10; padding-top:10; padding-bottom:10; padding-right:10 ; background: %1}").arg(paneColor));
+    infoWidg->setStyleSheet(    QString(scrollStyling + "QTabBar::tab{background: #1c2529; color: %1;} QTabBar::tab:selected{background: #0b1418;} QTextEdit{background-color:#000;}").arg(windowForegroundColor));
+    toolBar->setStyleSheet(     QString("QToolBar{background-color: %1; border-bottom: 1px solid %2;}").arg(windowColor,windowBorder));
+    errorPane->setStyleSheet(   QString("QTextEdit{background-color: %1;} .error-background{background-color: %2} ").arg(paneColor, currentTheme->color("ErrorBackground").name()));
 
-    docsCentral->setStyleSheet(QString("QTabBar::tab{background: #1c2529; color: %1;} QTabBar::tab:selected{background: #0b1418}").arg(windowForegroundColor));
-    docWidget->setStyleSheet(QString("QDockWidget QListView {color: %4; background-color: %2;} QDockWidget::title{color: %4; border-bottom: 1px solid %3; text-align: center; background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 %1, stop: 1.0 #1c2529);}").arg(windowColor,paneColor, windowBorder, windowForegroundColor));
+    for(int i=0; i < tabs->count(); i++){
+      SonicPiScintilla *ws = (SonicPiScintilla *)tabs->widget(i);
+      ws->setEdgeColor(Qt::white);
+    }
 
-    docPane->setStyleSheet(QString("QTextBrowser { selection-color: white; selection-background-color: deeppink; padding-left:10; padding-top:10; padding-bottom:10; padding-right:10 ; background: %1}").arg(paneColor));
-
-    infoWidg->setStyleSheet(QString("QTabBar::tab{background: #1c2529; color: %1;} QTabBar::tab:selected{background: #0b1418}").arg(windowForegroundColor));
-
-    toolBar->setStyleSheet(QString("QToolBar{background-color: %1; border-bottom: 1px solid %2;}").arg(windowColor,windowBorder));
-    errorPane->setStyleSheet(QString("QTextEdit{background-color: %1;} .error-background{background-color: %2} ").arg(paneColor, currentTheme->color("ErrorBackground").name()));
+    for(int i=0; i < infoTabs->count(); i++){
+      QTextEdit *w = (QTextEdit *)infoTabs->widget(i);
+      w->setHtml("<head><link rel=\"stylesheet\" type=\"text/css\" href=\"qrc:///html/dark_styles.css\"/></head>"+readFile(infoFiles->at(i)));
+      w->setStyleSheet(QString(scrollStyling + "QTextBrowser{ padding-left:10; padding-top:10; padding-bottom:10; padding-right:10;}"));
+    }
 
     refreshDocContent();
 
@@ -1278,6 +1295,12 @@ void MainWindow::changeTheme(){
     QApplication::setPalette(p);
 
     errorPane->setStyleSheet(QString(".error-background{background-color: %1;} QTextEdit{background-color: %1;}").arg(currentTheme->color("ErrorBackground").name()));
+
+    for(int i=0; i < infoTabs->count(); i++){
+      QTextEdit *w = (QTextEdit *)infoTabs->widget(i);
+      w->setHtml(readFile(infoFiles->at(i)));
+      w->setStyleSheet(defaultTextBrowserStyle);
+    }
 
     refreshDocContent();
   }
@@ -1586,16 +1609,13 @@ QString MainWindow::readFile(QString name)
   return s;
 }
 
-void MainWindow::createInfoPane() {
-  QTabWidget *infoTabs = new QTabWidget(this);
+void MainWindow::createInfoPane(QStringList *files) {
+  infoTabs = new QTabWidget(this);
 
-  QStringList files, tabs;
-  files << ":/html/info.html" << ":/info/CORETEAM.html" << ":/info/CONTRIBUTORS.html" <<
-    ":/info/COMMUNITY.html" << ":/info/LICENSE.html" << ":/info/CHANGELOG.html";
-  tabs << tr("About") << tr("Core Team") << tr("Contributors") <<
-    tr("Community") << tr("License") << tr("History");
+  QStringList tabs;
+  tabs << tr("About") << tr("Core Team") << tr("Contributors") << tr("Community") << tr("License") << tr("History");
 
-  for (int t=0; t < files.size(); t++) {
+  for (int t=0; t < files->size(); t++) {
     QTextBrowser *pane = new QTextBrowser;
     addUniversalCopyShortcuts(pane);
     pane->setOpenExternalLinks(true);
