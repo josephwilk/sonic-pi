@@ -31,6 +31,7 @@ class SonicPiScintilla : public QsciScintilla
   void redraw();
 
   public slots:
+    void search();
     void cutLineFromPoint();
     void tabCompleteifList();
     void transposeChars();

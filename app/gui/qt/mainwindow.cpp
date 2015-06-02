@@ -206,6 +206,10 @@ MainWindow::MainWindow(QApplication &app, bool i18n, QSplashScreen* splash)
 #endif
     connect (setMark, SIGNAL(activated()), workspace, SLOT(setMark())) ;
 
+    //search
+    QShortcut *search = new QShortcut(ctrlKey('s'), workspace);
+    connect(search, SIGNAL(activated()), workspace, SLOT(search()));
+
     //escape
     QShortcut *escape = new QShortcut(ctrlKey('g'), workspace);
     QShortcut *escape2 = new QShortcut(QKeySequence("Escape"), workspace);

@@ -193,6 +193,10 @@ void SonicPiScintilla::addKeyBinding(QSettings &qs, int cmd, int key)
   qs.setValue(skey, key);
 }
 
+void SonicPiScintilla::search(){
+  this->findFirst("hi",true,true,false,true);
+}
+
 void SonicPiScintilla::cutLineFromPoint()
 {
   int linenum, index;
