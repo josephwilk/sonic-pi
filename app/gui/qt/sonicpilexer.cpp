@@ -24,11 +24,11 @@ SonicPiLexer::SonicPiLexer(SonicPiTheme *theme) : QsciLexerRuby() {
 }
 
 #if defined(Q_OS_WIN)
-static char default_font[] = "Courier New";
+static char default_font[] = "Monoflur";
 #elif defined(Q_OS_MAC)
-static char default_font[] = "Menlo";
+static char default_font[] = "Monoflur";
 #else
-static char default_font[] = "Bitstream Vera Sans Mono";
+static char default_font[] = "Monoflur";
 #endif
 
 
