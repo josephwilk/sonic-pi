@@ -177,6 +177,8 @@ MainWindow::MainWindow(QApplication &app, bool i18n, QSplashScreen* splash)
   }
 
   // Window layout
+  this->setWindowOpacity(0.6);
+
   tabs = new QTabWidget();
   tabs->setTabsClosable(false);
   tabs->setMovable(false);
@@ -274,11 +276,11 @@ MainWindow::MainWindow(QApplication &app, bool i18n, QSplashScreen* splash)
   errorPane->setReadOnly(true);
   outputPane->setLineWrapMode(QTextEdit::NoWrap);
 #if defined(Q_OS_WIN)
-  outputPane->setFontFamily("Courier New");
+  outputPane->setFontFamily("Monoflur");
 #elif defined(Q_OS_MAC)
-  outputPane->setFontFamily("Menlo");
+  outputPane->setFontFamily("Monoflur");
 #else
-  outputPane->setFontFamily("Bitstream Vera Sans Mono");
+  outputPane->setFontFamily("Monoflur");
 #endif
 
   outputPane->document()->setMaximumBlockCount(1000);
@@ -630,8 +632,8 @@ void MainWindow::startServer(){
     serverProcess->setStandardOutputFile(sp_output_log_path);
     serverProcess->start(prg_path, args);
     if (!serverProcess->waitForStarted()) {
-      invokeStartupError(tr("ruby could not be started, is it installed and in your PATH?"));
-      return;
+      //invokeStartupError(tr("ruby could not be started, is it installed and in your PATH?"));
+      //return;
     }
 }
 
