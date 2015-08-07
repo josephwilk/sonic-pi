@@ -120,6 +120,7 @@ MainWindow::MainWindow(QApplication &app, bool i18n, QSplashScreen* splash)
   sendOSC(msg);
   sleep(2);
 
+  setWindowOpacity(0.5);
 
   setUnifiedTitleAndToolBarOnMac(true);
   setWindowIcon(QIcon(":images/icon-smaller.png"));

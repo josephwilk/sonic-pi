@@ -14,8 +14,8 @@
 #++
 
 ## ---- Modify these to point to your system
-QSCINTILLA=/Users/sam/Downloads/tmp/QScintilla-gpl-2.9/Qt4Qt5
-QTBIN=/Users/sam/Development/Qt/5.4/clang_64/bin
+QSCINTILLA=/Users/josephwilk/Workspace/c++/QScintilla-gpl-2.9/Qt4Qt5/
+QTBIN=/Users/josephwilk/Qt/5.4/clang_64/bin
 LIBQS=libqscintilla2.12.0.0.dylib
 LIBQS_LINK=libqscintilla2.12.dylib
 ## ----

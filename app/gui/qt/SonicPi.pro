@@ -19,9 +19,9 @@
 
 # -- Change to match the location of QScintilla on your system
 #
- LIBS += -L/Users/sam/Downloads/tmp/QScintilla-gpl-2.9/Qt4Qt5 -lqscintilla2
- INCLUDEPATH += /Users/sam/Downloads/tmp/QScintilla-gpl-2.9/Qt4Qt5
- DEPENDPATH += /Users/sam/Downloads/tmp/QScintilla-gpl-2.9/Qt4Qt5
+LIBS += -L/Users/josephwilk/Workspace/c++/QScintilla-gpl-2.9/Qt4Qt5/ -lqscintilla2
+INCLUDEPATH += /Users/josephwilk/Workspace/c++//QScintilla-gpl-2.9/Qt4Qt5/
+DEPENDPATH += /Users/josephwilk/Workspace/c++/QScintilla-gpl-2.9/Qt4Qt5/
 # --
 
 QT       += core gui concurrent network
@@ -39,7 +39,7 @@ macx {
 }
 
 !win32 {
-  QMAKE_CXXFLAGS += -Wall -Werror -Wextra
+  QMAKE_CXXFLAGS += -Wall  -Wextra
 }
 win32 {
   QMAKE_CXXFLAGS += /WX
