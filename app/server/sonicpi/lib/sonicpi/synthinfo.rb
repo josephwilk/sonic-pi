@@ -1761,6 +1761,169 @@ module SonicPi
     end
   end
 
+  class Stringey < SonicPiSynth
+    def name
+      "Stringey"
+    end
+
+    def introduced
+      Version.new(2,4,0)
+    end
+
+    def synth_name
+      "string"
+    end
+
+    def doc
+      ""
+    end
+
+    def arg_defaults
+      {
+        :note => 52,
+        :note_slide => 0,
+        :note_slide_shape => 5,
+        :note_slide_curve => 0,
+
+        :amp => 1,
+        :amp_slide => 0,
+        :amp_slide_shape => 5,
+        :amp_slide_curve => 0,
+
+        :pan => 0,
+        :pan_slide => 0,
+        :pan_slide_shape => 5,
+        :pan_slide_curve => 0,
+
+        :attack => 0.1,
+        :decay => 0,
+        :sustain => 0,
+        :release => 1,
+        :attack_level => 1,
+        :sustain_level => 1,
+        :env_curve => 2,
+
+        :cutoff => 130,
+        :cutoff_slide => 0,
+        :cutoff_slide_shape => 5,
+        :cutoff_slide_curve => 0,
+        :res => 0.7,
+        :res_slide => 0,
+        :res_slide_shape => 5,
+        :res_slide_curve => 0,
+      }
+    end
+  end
+
+  class Twang < SonicPiSynth
+    def name
+      "Twang"
+    end
+
+    def introduced
+      Version.new(2,4,0)
+    end
+
+    def synth_name
+      "twang"
+    end
+
+    def doc
+      ""
+    end
+
+    def arg_defaults
+      {
+        :note => 52,
+        :note_slide => 0,
+        :note_slide_shape => 5,
+        :note_slide_curve => 0,
+
+        :amp => 1,
+        :amp_slide => 0,
+        :amp_slide_shape => 5,
+        :amp_slide_curve => 0,
+
+        :pan => 0,
+        :pan_slide => 0,
+        :pan_slide_shape => 5,
+        :pan_slide_curve => 0,
+
+        :attack => 0.1,
+        :decay => 0,
+        :sustain => 0,
+        :release => 1,
+        :attack_level => 1,
+        :sustain_level => 1,
+        :env_curve => 2,
+
+        :cutoff => 130,
+        :cutoff_slide => 0,
+        :cutoff_slide_shape => 5,
+        :cutoff_slide_curve => 0,
+        :res => 0.7,
+        :res_slide => 0,
+        :res_slide_shape => 5,
+        :res_slide_curve => 0,
+      }
+    end
+  end
+
+  class Wobbling < SonicPiSynth
+    def name
+      "Plucked"
+    end
+
+    def introduced
+      Version.new(2,4,0)
+    end
+
+    def synth_name
+      "wobbling"
+    end
+
+    def doc
+      ""
+    end
+
+    def arg_defaults
+      {
+        :note => 52,
+        :note_slide => 0,
+        :note_slide_shape => 5,
+        :note_slide_curve => 0,
+
+        :amp => 1,
+        :amp_slide => 0,
+        :amp_slide_shape => 5,
+        :amp_slide_curve => 0,
+
+        :pan => 0,
+        :pan_slide => 0,
+        :pan_slide_shape => 5,
+        :pan_slide_curve => 0,
+
+        :attack => 0.1,
+        :decay => 0,
+        :sustain => 0,
+        :release => 1,
+        :attack_level => 1,
+        :sustain_level => 1,
+        :env_curve => 2,
+
+        :cutoff => 130,
+        :cutoff_slide => 0,
+        :cutoff_slide_shape => 5,
+        :cutoff_slide_curve => 0,
+        :res => 0.7,
+        :res_slide => 0,
+        :res_slide_shape => 5,
+        :res_slide_curve => 0,
+      }
+    end
+  end
+
+
 
   class DarkAmbience < SonicPiSynth
     def name
@@ -5087,6 +5250,11 @@ The window_size is the length of the slices and is measured in seconds. It needs
       :dark_ambience => DarkAmbience.new,
       
       :plucked => Plucked.new,
+      :wobbling => Wobbling.new,
+      :string => Stringey.new,
+      :twang => Twang.new,    
+      :dark_sea_horn => DarkSeaHorn.new,
+
       
       :growl => Growl.new,
       :hollow => Hollow.new,

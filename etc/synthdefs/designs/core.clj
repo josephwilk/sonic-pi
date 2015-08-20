@@ -17,7 +17,6 @@
 
 (ns sonic-pi.synths.core
   (:use [overtone.live])
-
   (:require [clojure.string :as str]))
 
 ;; Utility functions (for creating and storing synthdefs)
