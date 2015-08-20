@@ -11,7 +11,6 @@
 ;; notice is included.
 ;;++
 
-
 (ns sonic-pi.synths.basic
   (:use [overtone.live])
   (:require [sonic-pi.synths.core :as core]))
