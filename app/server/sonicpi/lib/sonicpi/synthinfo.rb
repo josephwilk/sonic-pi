@@ -320,6 +320,13 @@ module SonicPi
           :modulatable => false
         },
 
+        :decay_level =>
+        {
+          :doc => "Amplitude level reached after decay phase and immediately before sustain phase. Defaults to sustain_level unless explicitly set",
+          :validations => [v_positive(:decay_level)],
+          :modulatable => false
+        },
+
         :sustain_level =>
         {
           :doc => "Amplitude level reached after decay phase and immediately before release phase.",
@@ -519,6 +526,7 @@ module SonicPi
         :sustain => 0,
         :release => 1,
         :attack_level => 1,
+        :decay_level => :sustain_level,
         :sustain_level => 1,
         :env_curve => 2
       }
@@ -580,6 +588,7 @@ module SonicPi
         :sustain => 0,
         :release => 1,
         :attack_level => 1,
+        :decay_level => :sustain_level,
         :sustain_level => 1,
         :env_curve => 2
       }
@@ -642,6 +651,7 @@ module SonicPi
         :sustain => 0,
         :release => 1,
         :attack_level => 1,
+        :decay_level => :sustain_level,
         :sustain_level => 1,
         :env_curve => 2,
 
@@ -782,6 +792,7 @@ module SonicPi
         :sustain => 0,
         :release => 1,
         :attack_level => 1,
+        :decay_level => :sustain_level,
         :sustain_level => 1,
         :env_curve => 2,
 
@@ -835,6 +846,7 @@ module SonicPi
         :sustain => 0,
         :release => 1,
         :attack_level => 1,
+        :decay_level => :sustain_level,
         :sustain_level => 1,
         :env_curve => 2,
 
@@ -959,6 +971,7 @@ module SonicPi
         :sustain => 0,
         :release => 1,
         :attack_level => 1,
+        :decay_level => :sustain_level,
         :sustain_level => 1,
         :env_curve => 2,
 
@@ -1023,6 +1036,7 @@ module SonicPi
         :sustain => 0,
         :release => 1,
         :attack_level => 1,
+        :decay_level => :sustain_level,
         :sustain_level => 1,
         :env_curve => 2,
 
@@ -1092,6 +1106,7 @@ module SonicPi
         :sustain => 0,
         :release => 1,
         :attack_level => 1,
+        :decay_level => :sustain_level,
         :sustain_level => 1,
         :env_curve => 2,
 
@@ -1156,6 +1171,7 @@ module SonicPi
         :sustain => 0,
         :release => 1,
         :attack_level => 1,
+        :decay_level => :sustain_level,
         :sustain_level => 1,
         :env_curve => 2,
 
@@ -1220,6 +1236,7 @@ module SonicPi
         :sustain => 0,
         :release => 1,
         :attack_level => 1,
+        :decay_level => :sustain_level,
         :sustain_level => 1,
         :env_curve => 2,
 
@@ -1288,6 +1305,7 @@ module SonicPi
         :sustain => 0,
         :release => 1,
         :attack_level => 1,
+        :decay_level => :sustain_level,
         :sustain_level => 1,
         :env_curve => 2,
 
@@ -1304,6 +1322,7 @@ module SonicPi
         :cutoff_sustain => :sustain,
         :cutoff_release => :release,
         :cutoff_attack_level => 1,
+        :cutoff_decay_level => :cutoff_sustain_level,
         :cutoff_sustain_level => 1,
         :res => 0.9,
         :res_slide => 0,
@@ -1454,6 +1473,7 @@ module SonicPi
         :sustain => 0,
         :release => 1,
         :attack_level => 1,
+        :decay_level => :sustain_level,
         :sustain_level => 1,
         :env_curve => 2,
 
@@ -1506,6 +1526,7 @@ module SonicPi
           :sustain => 0,
           :release => 1,
           :attack_level => 1,
+          :decay_level => :sustain_level,
           :sustain_level => 1,
           :env_curve => 2,
           :cutoff => 130,
@@ -1552,6 +1573,7 @@ module SonicPi
         :sustain => 0,
         :release => 0.85,
         :attack_level => 1,
+        :decay_level => :sustain_level,
         :sustain_level => 1,
         :env_curve => 2,
 
@@ -1703,6 +1725,7 @@ module SonicPi
         :sustain => 0,
         :release => 1,
         :attack_level => 1,
+        :decay_level => :sustain_level,
         :sustain_level => 1,
         :env_curve => 2,
 
@@ -1757,6 +1780,7 @@ module SonicPi
         :sustain => 0,
         :release => 1,
         :attack_level => 1,
+        :decay_level => :sustain_level,
         :sustain_level => 1,
         :env_curve => 2,
 
@@ -1972,6 +1996,7 @@ module SonicPi
         :sustain => 0,
         :release => 1,
         :attack_level => 1,
+        :decay_level => :sustain_level,
         :sustain_level => 1,
         :env_curve => 2,
 
@@ -2076,6 +2101,7 @@ module SonicPi
         :sustain => 0,
         :release => 4.0,
         :attack_level => 1,
+        :decay_level => :sustain_level,
         :sustain_level => 1,
         :env_curve => 2
       }
@@ -2132,6 +2158,7 @@ module SonicPi
         :sustain => 0,
         :release => 4.0,
         :attack_level => 1,
+        :decay_level => :sustain_level,
         :sustain_level => 1,
         :env_curve => 2
       }
@@ -2190,6 +2217,7 @@ module SonicPi
         :sustain => 0,
         :release => 1,
         :attack_level => 1,
+        :decay_level => :sustain_level,
         :sustain_level => 1,
         :env_curve => 2,
 
@@ -2271,6 +2299,7 @@ module SonicPi
         :sustain => 0,
         :release => 1,
         :attack_level => 1,
+        :decay_level => :sustain_level,
         :sustain_level => 1,
 
         :cutoff => 100,
@@ -2413,6 +2442,7 @@ module SonicPi
         :sustain => 0,
         :release => 1,
         :attack_level => 1,
+        :decay_level => :sustain_level,
         :sustain_level => 1,
         :env_curve => 2,
 
@@ -2697,6 +2727,7 @@ module SonicPi
         :release => 0,
 
         :attack_level => 1,
+        :decay_level => :sustain_level,
         :sustain_level => 1,
         :env_curve => 2,
 
