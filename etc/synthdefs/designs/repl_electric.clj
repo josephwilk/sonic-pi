@@ -3,6 +3,54 @@
   (:require [sonic-pi.synths.core :as core]))
 
 (without-namespace-in-synthdef
+ (defsynth sonic-pi-gpa [amp 1 noise-level 0.05 attack 0.4 release 0.9 saw-cutoff 300 noise-cutoff 100 wave 1
+                                        note 52
+                                        note_slide 0
+                                        note_slide_shape 5
+                                        note_slide_curve 0
+                                        amp 1
+                                        amp_slide 0
+                                        amp_slide_shape 5
+                                        amp_slide_curve 0
+                                        pan 0
+                                        pan_slide 0
+                                        pan_slide_shape 5
+                                        pan_slide_curve 0
+                                        attack 0
+                                        decay 0
+                                        sustain 0
+                                        release 0.2
+                                        attack_level 1
+                                        sustain_level 1
+                                        env_curve 2
+                                        out_bus 0
+
+                                        ]
+   (let [note      (varlag note note_slide note_slide_curve note_slide_shape)
+         amp       (varlag amp amp_slide amp_slide_curve amp_slide_shape)
+         pan       (varlag pan pan_slide pan_slide_curve pan_slide_shape)
+         freq (midicps note)
+
+          noize (* noise-level (pink-noise))
+          wave (select:ar wave [(mix [(lpf (lf-saw freq) saw-cutoff) (lf-tri freq)])
+                                (lpf (saw freq) saw-cutoff)
+                                (lpf (pulse freq) saw-cutoff)
+                                (mix [(lpf (saw freq) saw-cutoff) (pulse freq)])
+                                (sum [(lpf (saw (/ freq 2)) saw-cutoff) (lf-tri freq)])
+                                (mix [(pitch-shift (lpf (sin-osc freq) saw-cutoff) 0.4 1 0 0.01)])])
+          src (mix [wave
+                    (lpf noize noise-cutoff)])
+          src (g-verb src 200 1 0.2)
+         env (env-gen:kr (env-adsr-ng attack decay sustain release attack_level sustain_level) :action FREE)
+          amp amp]
+     (out out_bus (* (* 1 amp) env src)))))
+
+(comment
+  (core/save-synthdef sonic-pi-gpa)
+  (sonic-pi-gpa :wave 0)
+  )
+
+(without-namespace-in-synthdef
  (defsynth sonic-pi-plucked [note 52
                              note_slide 0
                              note_slide_shape 5

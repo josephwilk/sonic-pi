@@ -21,7 +21,7 @@
 
 ;; Utility functions (for creating and storing synthdefs)
 
-(def path-to-synthdefs "/Users/josephwilk/Workspace/josephwilk/ruby/sonic-pi/etc/synthdefs")
+(def path-to-synthdefs "/Users/josephwilk/Workspace/josephwilk/c++/sonic-pi/etc/synthdefs")
 
 (defn save-synthdef [sdef]
   (let [compiled (str path-to-synthdefs "/compiled/" (last (str/split (-> sdef :sdef :name) #"/")) ".scsyndef")
