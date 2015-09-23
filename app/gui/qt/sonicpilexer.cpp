@@ -24,11 +24,11 @@ SonicPiLexer::SonicPiLexer(SonicPiTheme *theme) : QsciLexerRuby() {
 }
 
 #if defined(Q_OS_WIN)
-static char default_font[] = "Courier New";
+static char default_font[] = "Monofur";
 #elif defined(Q_OS_MAC)
-static char default_font[] = "Menlo";
+static char default_font[] = "Monofur";
 #else
-static char default_font[] = "Bitstream Vera Sans Mono";
+static char default_font[] = "Monofur";
 #endif
 
 
@@ -41,7 +41,7 @@ QStringList SonicPiLexer::autoCompletionWordSeparators() const {
 
 void SonicPiLexer::highlightAll()
 {
-    setPaper(QColor("deeppink"),-1);
+    setPaper(QColor(255,20,147, 100),-1);
     setColor(QColor("white"), -1);
     this->setDefaultPaper(theme->color("Background"));
 }

@@ -143,6 +143,7 @@ private slots:
     void toggleLeftScope();
     void toggleRightScope();
     void toggleScopeAxes();
+    void changeWrapMode();
     void toggleDarkMode();
     void updateDarkMode();
     void showPrefsPane();
@@ -257,6 +258,7 @@ private:
     SonicPiLog *outputPane;
     QTextBrowser *errorPane;
     QDockWidget *outputWidget;
+    QWidget *outputTitleWidget;
     QDockWidget *prefsWidget;
     QDockWidget *hudWidget;
     QDockWidget *docWidget;
@@ -291,6 +293,7 @@ private:
     QCheckBox *enable_external_synths_cb;
     QCheckBox *synth_trigger_timing_guarantees_cb;
     QCheckBox *show_line_numbers;
+    QCheckBox *wrap_mode;
     QCheckBox *auto_indent_on_run;
     QCheckBox *full_screen;
     QCheckBox *show_log;

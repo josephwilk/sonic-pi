@@ -2055,6 +2055,283 @@ module SonicPi
       end
     end
 
+
+    #--------------
+    class Plucked < SonicPiSynth
+      def name
+        "Plucked"
+      end
+
+      def introduced
+        Version.new(2,4,0)
+      end
+
+      def synth_name
+        "plucked"
+      end
+
+      def doc
+        ""
+      end
+
+      def arg_defaults
+        {
+          :note => 52,
+          :note_slide => 0,
+          :note_slide_shape => 5,
+          :note_slide_curve => 0,
+
+          :amp => 1,
+          :amp_slide => 0,
+          :amp_slide_shape => 5,
+          :amp_slide_curve => 0,
+
+          :pan => 0,
+          :pan_slide => 0,
+          :pan_slide_shape => 5,
+          :pan_slide_curve => 0,
+
+          :attack => 0.1,
+          :decay => 0,
+          :sustain => 0,
+          :release => 1,
+          :attack_level => 1,
+          :decay_level => :sustain_level,
+          :sustain_level => 1,
+          :env_curve => 2,
+
+          :cutoff => 130,
+          :cutoff_slide => 0,
+          :cutoff_slide_shape => 5,
+          :cutoff_slide_curve => 0,
+          :res => 0.7,
+          :res_slide => 0,
+          :res_slide_shape => 5,
+          :res_slide_curve => 0,
+        }
+      end
+    end
+
+    class GPA < SonicPiSynth
+      def name
+        "GPA"
+      end
+
+      def introduced
+        Version.new(2,4,0)
+      end
+
+      def synth_name
+        "gpa"
+      end
+
+      def doc
+        ""
+      end
+
+      def arg_defaults
+        {
+          :note => 52,
+          :note_slide => 0,
+          :note_slide_shape => 5,
+          :note_slide_curve => 0,
+
+          :amp => 1,
+          :amp_slide => 0,
+          :amp_slide_shape => 5,
+          :amp_slide_curve => 0,
+
+          :pan => 0,
+          :pan_slide => 0,
+          :pan_slide_shape => 5,
+          :pan_slide_curve => 0,
+
+          :attack => 0.1,
+          :decay => 0,
+          :sustain => 0,
+          :release => 1,
+          :attack_level => 1,
+          :sustain_level => 1,
+          :env_curve => 2,
+
+          :cutoff => 130,
+          :cutoff_slide => 0,
+          :cutoff_slide_shape => 5,
+          :cutoff_slide_curve => 0,
+          :res => 0.7,
+          :res_slide => 0,
+          :res_slide_shape => 5,
+          :res_slide_curve => 0,
+        }
+      end
+    end
+
+
+    class Stringey < SonicPiSynth
+      def name
+        "Stringey"
+      end
+
+      def introduced
+        Version.new(2,4,0)
+      end
+
+      def synth_name
+        "string"
+      end
+
+      def doc
+        ""
+      end
+
+      def arg_defaults
+        {
+          :note => 52,
+          :note_slide => 0,
+          :note_slide_shape => 5,
+          :note_slide_curve => 0,
+
+          :amp => 1,
+          :amp_slide => 0,
+          :amp_slide_shape => 5,
+          :amp_slide_curve => 0,
+
+          :pan => 0,
+          :pan_slide => 0,
+          :pan_slide_shape => 5,
+          :pan_slide_curve => 0,
+
+          :attack => 0.1,
+          :decay => 0,
+          :sustain => 0,
+          :release => 1,
+          :attack_level => 1,
+          :sustain_level => 1,
+          :env_curve => 2,
+
+          :cutoff => 130,
+          :cutoff_slide => 0,
+          :cutoff_slide_shape => 5,
+          :cutoff_slide_curve => 0,
+          :res => 0.7,
+          :res_slide => 0,
+          :res_slide_shape => 5,
+          :res_slide_curve => 0,
+        }
+      end
+    end
+
+    class Twang < SonicPiSynth
+      def name
+        "Twang"
+      end
+
+      def introduced
+        Version.new(2,4,0)
+      end
+
+      def synth_name
+        "twang"
+      end
+
+      def doc
+        ""
+      end
+
+      def arg_defaults
+        {
+          :note => 52,
+          :note_slide => 0,
+          :note_slide_shape => 5,
+          :note_slide_curve => 0,
+
+          :amp => 1,
+          :amp_slide => 0,
+          :amp_slide_shape => 5,
+          :amp_slide_curve => 0,
+
+          :pan => 0,
+          :pan_slide => 0,
+          :pan_slide_shape => 5,
+          :pan_slide_curve => 0,
+
+          :attack => 0.1,
+          :decay => 0,
+          :sustain => 0,
+          :release => 1,
+          :attack_level => 1,
+          :sustain_level => 1,
+          :env_curve => 2,
+
+          :cutoff => 130,
+          :cutoff_slide => 0,
+          :cutoff_slide_shape => 5,
+          :cutoff_slide_curve => 0,
+          :res => 0.7,
+          :res_slide => 0,
+          :res_slide_shape => 5,
+          :res_slide_curve => 0,
+        }
+      end
+    end
+
+    class Wobbling < SonicPiSynth
+      def name
+        "Plucked"
+      end
+
+      def introduced
+        Version.new(2,4,0)
+      end
+
+      def synth_name
+        "wobbling"
+      end
+
+      def doc
+        ""
+      end
+
+      def arg_defaults
+        {
+          :note => 52,
+          :note_slide => 0,
+          :note_slide_shape => 5,
+          :note_slide_curve => 0,
+
+          :amp => 1,
+          :amp_slide => 0,
+          :amp_slide_shape => 5,
+          :amp_slide_curve => 0,
+
+          :pan => 0,
+          :pan_slide => 0,
+          :pan_slide_shape => 5,
+          :pan_slide_curve => 0,
+
+          :attack => 0.1,
+          :decay => 0,
+          :sustain => 0,
+          :release => 1,
+          :attack_level => 1,
+          :sustain_level => 1,
+          :env_curve => 2,
+
+          :cutoff => 130,
+          :cutoff_slide => 0,
+          :cutoff_slide_shape => 5,
+          :cutoff_slide_curve => 0,
+          :res => 0.7,
+          :res_slide => 0,
+          :res_slide_shape => 5,
+          :res_slide_curve => 0,
+        }
+      end
+    end
+    
+    #--------------
+
+
     class DarkAmbience < SonicPiSynth
       def name
         "Dark Ambience"
@@ -2210,6 +2487,11 @@ module SonicPi
           :pan_slide_shape => 1,
           :pan_slide_curve => 0,
 
+          :cutoff => 90,
+          :cutoff_slide => 0,
+          :cutoff_slide_shape => 5,
+          :cutoff_slide_curve => 0,
+
           :attack => 1,
           :decay => 0,
           :sustain => 0,
@@ -2221,6 +2503,57 @@ module SonicPi
         }
       end
     end
+
+    class LeadSaw < SonicPiSynth
+      def name
+        "LeadSaw"
+      end
+
+      def introduced
+        Version.new(2,8,0)
+      end
+
+      def synth_name
+        "leadsaw"
+      end
+
+      def doc
+        "many saws."
+      end
+
+      def arg_defaults
+        {:note => 52,
+          :note_slide => 0,
+          :note_slide_shape => 1,
+          :note_slide_curve => 0,
+
+          :amp => 1,
+          :amp_slide => 0,
+          :amp_slide_shape => 1,
+          :amp_slide_curve => 0,
+
+          :pan => 0,
+          :pan_slide => 0,
+          :pan_slide_shape => 1,
+          :pan_slide_curve => 0,
+
+          :cutoff => 90,
+          :cutoff_slide => 0,
+          :cutoff_slide_shape => 5,
+          :cutoff_slide_curve => 0,
+
+          :attack => 1,
+          :decay => 0,
+          :sustain => 0,
+          :release => 4.0,
+          :attack_level => 1,
+          :decay_level => :sustain_level,
+          :sustain_level => 1,
+          :env_curve => 2
+        }
+      end
+    end
+
 
     class Singer < SonicPiSynth
       def name
@@ -6712,10 +7045,18 @@ Use FX `:band_eq` with a negative db for the opposite effect - to attenuate a gi
         :prophet => Prophet.new,
         :zawa => Zawa.new,
         :dark_ambience => DarkAmbience.new,
+        :leadsaw => LeadSaw.new,
         :growl => Growl.new,
         :hollow => Hollow.new,
-        #      :dark_sea_horn => DarkSeaHorn.new,
         #      :singer        => Singer.new,
+        
+        :plucked => Plucked.new,
+        :gpa => GPA.new,
+        :wobbling => Wobbling.new,
+        :string => Stringey.new,
+        :twang => Twang.new,    
+        :dark_sea_horn => DarkSeaHorn.new,
+        
         :mono_player => MonoPlayer.new,
         :stereo_player => StereoPlayer.new,
         :blade => SynthViolin.new,

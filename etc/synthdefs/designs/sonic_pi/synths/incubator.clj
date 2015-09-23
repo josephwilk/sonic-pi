@@ -18,6 +18,8 @@
 
 
 
+
+
 ;; Triggered synths
 (do
   (without-namespace-in-synthdef
@@ -324,6 +326,7 @@
       release 4
       attack_level 1
       sustain_level 1
+      decay_level 1
       env_curve 1
 
       cutoff 110
@@ -371,13 +374,15 @@
            vibrato     (* vibrato_depth (sin-osc:kr vibrato_speed))
            in          (saw:ar (lag:kr (+ freq vibrato) 0.2))
 
-           env         (env-gen:kr (core/shaped-adsr attack decay sustain release attack_level sustain_level env_curve) :action FREE)
+           env         (env-gen:kr (core/shaped-adsr attack decay sustain release attack_level decay_level sustain_level env_curve) :action FREE)
+           ;;env       (env-gen:kr (core/shaped-adsr attack decay sustain release attack_level sustain_level env_curve) :action FREE)
            snd         (mix (* amps-list (bpf:ar in freqs-list qs-list)))
            snd         (rlpf snd cutoff-freq res)
            snd         (* snd amp)]
        (out out_bus (* (pan2 snd pan) env)))))
 
-  (defsynth sonic-pi-dark_sea_horn
+  (without-namespace-in-synthdef
+   (defsynth sonic-pi-dark_sea_horn
      "Dark, rough and sharp sea horn.
      Note: we are purposely not using recusion using busses. Just does not have the same feel."
      [out_bus 0
@@ -397,86 +402,116 @@
       amp_slide_shape 1
       amp_slide_curve 0
 
+      cutoff 110
+      cutoff_slide 0
+      cutoff_slide_shape 5
+      cutoff_slide_curve 0
+
+      res 1
+      res_slide 0
+      res_slide_shape 5
+      res_slide_curve 0
+
       attack 1
       decay 0
       sustain 0
       release 4.0
       attack_level 1
       sustain_level 1
-      env_curve 1]
-     (let [note (varlag note note_slide note_slide_curve note_slide_shape)
-           amp (varlag amp amp_slide amp_slide_curve amp_slide_shape)
-           pan  (varlag pan pan_slide pan_slide_curve pan_slide_shape)
+      decay_level -1
+
+      env_curve 1
+
+      noise1 6
+      noise2 3
+      noise1_freq 3
+      noise2_freq 0.1
+
+      max_delay 0.3
+      ]
+     (let [ decay_level   (select:kr (= -1 decay_level) [decay_level sustain_level])
+
+           note (varlag note note_slide note_slide_curve note_slide_shape)
+           amp   (varlag amp amp_slide amp_slide_curve amp_slide_shape)
+           pan   (varlag pan pan_slide pan_slide_curve pan_slide_shape)
+           cutoff (varlag cutoff cutoff_slide cutoff_slide_curve cutoff_slide_shape)
            freq (midicps note)
+           cutoff-freq (midicps cutoff)
+           res         (varlag res res_slide res_slide_curve res_slide_shape)
 
-           a (tanh (* 6 (lf-noise1:ar 3) (sin-osc:ar freq (* (lf-noise1:ar 0.1) 3))))
+           a (tanh (* noise1 (lf-noise1:ar noise1_freq) (sin-osc:ar freq (* (lf-noise1:ar noise2_freq) noise2))))
 
-           a (allpass-l:ar a 0.3 [(+ (ranged-rand 0 0.2) 0.1) (+ (ranged-rand 0 0.2) 0.1)] 5)
-           a (allpass-l:ar a 0.3 [(+ (ranged-rand 0 0.2) 0.1) (+ (ranged-rand 0 0.2) 0.1)] 5)
-           a (allpass-l:ar a 0.3 [(+ (ranged-rand 0 0.2) 0.1) (+ (ranged-rand 0 0.2) 0.1)] 5)
-           a (allpass-l:ar a 0.3 [(+ (ranged-rand 0 0.2) 0.1) (+ (ranged-rand 0 0.2) 0.1)] 5)
-           a (allpass-l:ar a 0.3 [(+ (ranged-rand 0 0.2) 0.1) (+ (ranged-rand 0 0.2) 0.1)] 5)
-           a (allpass-l:ar a 0.3 [(+ (ranged-rand 0 0.2) 0.1) (+ (ranged-rand 0 0.2) 0.1)] 5)
-           a (allpass-l:ar a 0.3 [(+ (ranged-rand 0 0.2) 0.1) (+ (ranged-rand 0 0.2) 0.1)] 5)
-           a (allpass-l:ar a 0.3 [(+ (ranged-rand 0 0.2) 0.1) (+ (ranged-rand 0 0.2) 0.1)] 5)
-           a (allpass-l:ar a 0.3 [(+ (ranged-rand 0 0.2) 0.1) (+ (ranged-rand 0 0.2) 0.1)] 5)
+           a (allpass-l:ar a max_delay [(+ (ranged-rand 0 0.2) 0.1) (+ (ranged-rand 0 0.2) 0.1)] 5)
+           a (allpass-l:ar a max_delay [(+ (ranged-rand 0 0.2) 0.1) (+ (ranged-rand 0 0.2) 0.1)] 5)
+           a (allpass-l:ar a max_delay [(+ (ranged-rand 0 0.2) 0.1) (+ (ranged-rand 0 0.2) 0.1)] 5)
+           a (allpass-l:ar a max_delay [(+ (ranged-rand 0 0.2) 0.1) (+ (ranged-rand 0 0.2) 0.1)] 5)
+           a (allpass-l:ar a max_delay [(+ (ranged-rand 0 0.2) 0.1) (+ (ranged-rand 0 0.2) 0.1)] 5)
+           a (allpass-l:ar a max_delay [(+ (ranged-rand 0 0.2) 0.1) (+ (ranged-rand 0 0.2) 0.1)] 5)
+           a (allpass-l:ar a max_delay [(+ (ranged-rand 0 0.2) 0.1) (+ (ranged-rand 0 0.2) 0.1)] 5)
+           a (allpass-l:ar a max_delay [(+ (ranged-rand 0 0.2) 0.1) (+ (ranged-rand 0 0.2) 0.1)] 5)
+           a (allpass-l:ar a max_delay [(+ (ranged-rand 0 0.2) 0.1) (+ (ranged-rand 0 0.2) 0.1)] 5)
            a (tanh a)
 
-           a (tanh (* 6 (lf-noise1:ar 3) (sin-osc:ar freq (* a (lf-noise1:ar 0.1) 3))))
-           a (allpass-l:ar a 0.3 [(+ (ranged-rand 0 0.2) 0.1) (+ (ranged-rand 0 0.2) 0.1)] 5)
-           a (allpass-l:ar a 0.3 [(+ (ranged-rand 0 0.2) 0.1) (+ (ranged-rand 0 0.2) 0.1)] 5)
-           a (allpass-l:ar a 0.3 [(+ (ranged-rand 0 0.2) 0.1) (+ (ranged-rand 0 0.2) 0.1)] 5)
-           a (allpass-l:ar a 0.3 [(+ (ranged-rand 0 0.2) 0.1) (+ (ranged-rand 0 0.2) 0.1)] 5)
-           a (allpass-l:ar a 0.3 [(+ (ranged-rand 0 0.2) 0.1) (+ (ranged-rand 0 0.2) 0.1)] 5)
-           a (allpass-l:ar a 0.3 [(+ (ranged-rand 0 0.2) 0.1) (+ (ranged-rand 0 0.2) 0.1)] 5)
-           a (allpass-l:ar a 0.3 [(+ (ranged-rand 0 0.2) 0.1) (+ (ranged-rand 0 0.2) 0.1)] 5)
-           a (allpass-l:ar a 0.3 [(+ (ranged-rand 0 0.2) 0.1) (+ (ranged-rand 0 0.2) 0.1)] 5)
-           a (allpass-l:ar a 0.3 [(+ (ranged-rand 0 0.2) 0.1) (+ (ranged-rand 0 0.2) 0.1)] 5)
+           a (tanh (* noise1 (lf-noise1:ar noise1_freq) (sin-osc:ar freq (* a (lf-noise1:ar noise2_freq) noise2))))
+           a (allpass-l:ar a max_delay [(+ (ranged-rand 0 0.2) 0.1) (+ (ranged-rand 0 0.2) 0.1)] 5)
+           a (allpass-l:ar a max_delay [(+ (ranged-rand 0 0.2) 0.1) (+ (ranged-rand 0 0.2) 0.1)] 5)
+           a (allpass-l:ar a max_delay [(+ (ranged-rand 0 0.2) 0.1) (+ (ranged-rand 0 0.2) 0.1)] 5)
+           a (allpass-l:ar a max_delay [(+ (ranged-rand 0 0.2) 0.1) (+ (ranged-rand 0 0.2) 0.1)] 5)
+           a (allpass-l:ar a max_delay [(+ (ranged-rand 0 0.2) 0.1) (+ (ranged-rand 0 0.2) 0.1)] 5)
+           a (allpass-l:ar a max_delay [(+ (ranged-rand 0 0.2) 0.1) (+ (ranged-rand 0 0.2) 0.1)] 5)
+           a (allpass-l:ar a max_delay [(+ (ranged-rand 0 0.2) 0.1) (+ (ranged-rand 0 0.2) 0.1)] 5)
+           a (allpass-l:ar a max_delay [(+ (ranged-rand 0 0.2) 0.1) (+ (ranged-rand 0 0.2) 0.1)] 5)
+           a (allpass-l:ar a max_delay [(+ (ranged-rand 0 0.2) 0.1) (+ (ranged-rand 0 0.2) 0.1)] 5)
            a (tanh a)
 
-           a (tanh (* 6 (lf-noise1:ar 3) (sin-osc:ar freq (* a (lf-noise1:ar 0.1) 3))))
-           a (allpass-l:ar a 0.3 [(+ (ranged-rand 0 0.2) 0.1) (+ (ranged-rand 0 0.2) 0.1)] 5)
-           a (allpass-l:ar a 0.3 [(+ (ranged-rand 0 0.2) 0.1) (+ (ranged-rand 0 0.2) 0.1)] 5)
-           a (allpass-l:ar a 0.3 [(+ (ranged-rand 0 0.2) 0.1) (+ (ranged-rand 0 0.2) 0.1)] 5)
-           a (allpass-l:ar a 0.3 [(+ (ranged-rand 0 0.2) 0.1) (+ (ranged-rand 0 0.2) 0.1)] 5)
-           a (allpass-l:ar a 0.3 [(+ (ranged-rand 0 0.2) 0.1) (+ (ranged-rand 0 0.2) 0.1)] 5)
-           a (allpass-l:ar a 0.3 [(+ (ranged-rand 0 0.2) 0.1) (+ (ranged-rand 0 0.2) 0.1)] 5)
-           a (allpass-l:ar a 0.3 [(+ (ranged-rand 0 0.2) 0.1) (+ (ranged-rand 0 0.2) 0.1)] 5)
-           a (allpass-l:ar a 0.3 [(+ (ranged-rand 0 0.2) 0.1) (+ (ranged-rand 0 0.2) 0.1)] 5)
-           a (allpass-l:ar a 0.3 [(+ (ranged-rand 0 0.2) 0.1) (+ (ranged-rand 0 0.2) 0.1)] 5)
+           a (tanh (* noise1 (lf-noise1:ar noise1_freq) (sin-osc:ar freq (* a (lf-noise1:ar noise2_freq) noise2))))
+           a (allpass-l:ar a max_delay [(+ (ranged-rand 0 0.2) 0.1) (+ (ranged-rand 0 0.2) 0.1)] 5)
+           a (allpass-l:ar a max_delay [(+ (ranged-rand 0 0.2) 0.1) (+ (ranged-rand 0 0.2) 0.1)] 5)
+           a (allpass-l:ar a max_delay [(+ (ranged-rand 0 0.2) 0.1) (+ (ranged-rand 0 0.2) 0.1)] 5)
+           a (allpass-l:ar a max_delay [(+ (ranged-rand 0 0.2) 0.1) (+ (ranged-rand 0 0.2) 0.1)] 5)
+           a (allpass-l:ar a max_delay [(+ (ranged-rand 0 0.2) 0.1) (+ (ranged-rand 0 0.2) 0.1)] 5)
+           a (allpass-l:ar a max_delay [(+ (ranged-rand 0 0.2) 0.1) (+ (ranged-rand 0 0.2) 0.1)] 5)
+           a (allpass-l:ar a max_delay [(+ (ranged-rand 0 0.2) 0.1) (+ (ranged-rand 0 0.2) 0.1)] 5)
+           a (allpass-l:ar a max_delay [(+ (ranged-rand 0 0.2) 0.1) (+ (ranged-rand 0 0.2) 0.1)] 5)
+           a (allpass-l:ar a max_delay [(+ (ranged-rand 0 0.2) 0.1) (+ (ranged-rand 0 0.2) 0.1)] 5)
            a (tanh a)
 
-           a (tanh (* 6 (lf-noise1:ar 3) (sin-osc:ar freq (* a (lf-noise1:ar 0.1) 3))))
-           a (allpass-l:ar a 0.3 [(+ (ranged-rand 0 0.2) 0.1) (+ (ranged-rand 0 0.2) 0.1)] 5)
-           a (allpass-l:ar a 0.3 [(+ (ranged-rand 0 0.2) 0.1) (+ (ranged-rand 0 0.2) 0.1)] 5)
-           a (allpass-l:ar a 0.3 [(+ (ranged-rand 0 0.2) 0.1) (+ (ranged-rand 0 0.2) 0.1)] 5)
-           a (allpass-l:ar a 0.3 [(+ (ranged-rand 0 0.2) 0.1) (+ (ranged-rand 0 0.2) 0.1)] 5)
-           a (allpass-l:ar a 0.3 [(+ (ranged-rand 0 0.2) 0.1) (+ (ranged-rand 0 0.2) 0.1)] 5)
-           a (allpass-l:ar a 0.3 [(+ (ranged-rand 0 0.2) 0.1) (+ (ranged-rand 0 0.2) 0.1)] 5)
-           a (allpass-l:ar a 0.3 [(+ (ranged-rand 0 0.2) 0.1) (+ (ranged-rand 0 0.2) 0.1)] 5)
-           a (allpass-l:ar a 0.3 [(+ (ranged-rand 0 0.2) 0.1) (+ (ranged-rand 0 0.2) 0.1)] 5)
-           a (allpass-l:ar a 0.3 [(+ (ranged-rand 0 0.2) 0.1) (+ (ranged-rand 0 0.2) 0.1)] 5)
+           a (tanh (* noise1 (lf-noise1:ar noise1_freq) (sin-osc:ar freq (* a (lf-noise1:ar noise2_freq) noise2))))
+           a (allpass-l:ar a max_delay [(+ (ranged-rand 0 0.2) 0.1) (+ (ranged-rand 0 0.2) 0.1)] 5)
+           a (allpass-l:ar a max_delay [(+ (ranged-rand 0 0.2) 0.1) (+ (ranged-rand 0 0.2) 0.1)] 5)
+           a (allpass-l:ar a max_delay [(+ (ranged-rand 0 0.2) 0.1) (+ (ranged-rand 0 0.2) 0.1)] 5)
+           a (allpass-l:ar a max_delay [(+ (ranged-rand 0 0.2) 0.1) (+ (ranged-rand 0 0.2) 0.1)] 5)
+           a (allpass-l:ar a max_delay [(+ (ranged-rand 0 0.2) 0.1) (+ (ranged-rand 0 0.2) 0.1)] 5)
+           a (allpass-l:ar a max_delay [(+ (ranged-rand 0 0.2) 0.1) (+ (ranged-rand 0 0.2) 0.1)] 5)
+           a (allpass-l:ar a max_delay [(+ (ranged-rand 0 0.2) 0.1) (+ (ranged-rand 0 0.2) 0.1)] 5)
+           a (allpass-l:ar a max_delay [(+ (ranged-rand 0 0.2) 0.1) (+ (ranged-rand 0 0.2) 0.1)] 5)
+           a (allpass-l:ar a max_delay [(+ (ranged-rand 0 0.2) 0.1) (+ (ranged-rand 0 0.2) 0.1)] 5)
            a (tanh a)
 
-           a (tanh (* 6 (lf-noise1:ar 3) (sin-osc:ar freq (* a (lf-noise1:ar 0.1) 3))))
-           a (allpass-l:ar a 0.3 [(+ (ranged-rand 0 0.2) 0.1) (+ (ranged-rand 0 0.2) 0.1)] 5)
-           a (allpass-l:ar a 0.3 [(+ (ranged-rand 0 0.2) 0.1) (+ (ranged-rand 0 0.2) 0.1)] 5)
-           a (allpass-l:ar a 0.3 [(+ (ranged-rand 0 0.2) 0.1) (+ (ranged-rand 0 0.2) 0.1)] 5)
-           a (allpass-l:ar a 0.3 [(+ (ranged-rand 0 0.2) 0.1) (+ (ranged-rand 0 0.2) 0.1)] 5)
-           a (allpass-l:ar a 0.3 [(+ (ranged-rand 0 0.2) 0.1) (+ (ranged-rand 0 0.2) 0.1)] 5)
-           a (allpass-l:ar a 0.3 [(+ (ranged-rand 0 0.2) 0.1) (+ (ranged-rand 0 0.2) 0.1)] 5)
-           a (allpass-l:ar a 0.3 [(+ (ranged-rand 0 0.2) 0.1) (+ (ranged-rand 0 0.2) 0.1)] 5)
-           a (allpass-l:ar a 0.3 [(+ (ranged-rand 0 0.2) 0.1) (+ (ranged-rand 0 0.2) 0.1)] 5)
-           a (allpass-l:ar a 0.3 [(+ (ranged-rand 0 0.2) 0.1) (+ (ranged-rand 0 0.2) 0.1)] 5)
+           a (tanh (* noise1 (lf-noise1:ar noise1_freq) (sin-osc:ar freq (* a (lf-noise1:ar noise2_freq) noise2))))
+           a (allpass-l:ar a max_delay [(+ (ranged-rand 0 0.2) 0.1) (+ (ranged-rand 0 0.2) 0.1)] 5)
+           a (allpass-l:ar a max_delay [(+ (ranged-rand 0 0.2) 0.1) (+ (ranged-rand 0 0.2) 0.1)] 5)
+           a (allpass-l:ar a max_delay [(+ (ranged-rand 0 0.2) 0.1) (+ (ranged-rand 0 0.2) 0.1)] 5)
+           a (allpass-l:ar a max_delay [(+ (ranged-rand 0 0.2) 0.1) (+ (ranged-rand 0 0.2) 0.1)] 5)
+           a (allpass-l:ar a max_delay [(+ (ranged-rand 0 0.2) 0.1) (+ (ranged-rand 0 0.2) 0.1)] 5)
+           a (allpass-l:ar a max_delay [(+ (ranged-rand 0 0.2) 0.1) (+ (ranged-rand 0 0.2) 0.1)] 5)
+           a (allpass-l:ar a max_delay [(+ (ranged-rand 0 0.2) 0.1) (+ (ranged-rand 0 0.2) 0.1)] 5)
+           a (allpass-l:ar a max_delay [(+ (ranged-rand 0 0.2) 0.1) (+ (ranged-rand 0 0.2) 0.1)] 5)
+           a (allpass-l:ar a max_delay [(+ (ranged-rand 0 0.2) 0.1) (+ (ranged-rand 0 0.2) 0.1)] 5)
            a (tanh a)
 
-           env (env-gen:kr (core/shaped-adsr attack decay sustain release attack_level sustain_level env_curve) :action FREE)
-           snd (* amp a)]
+
+           env (env-gen:kr (core/shaped-adsr attack decay sustain release attack_level decay_level sustain_level env_curve) :action FREE)
+           snd (rlpf a cutoff-freq res)
+           snd (* amp snd)
+           ]
        (out out_bus (* env (pan2 snd pan)))))
 
   (comment
-    (sonic-pi-dark_sea_horn :attack 1 :release 8 :note 40)
-    (save-to-pi sonic-pi-dark_sea_horn)
+    (sonic-pi-dark_sea_horn :attack 1 :release 8 :note 40 :cutoff 90 :amp 1.0 :max_delay 1 :noise1_freq 3)
+    (core/save-synthdef sonic-pi-dark_sea_horn)
+                        sonic-pi-dark_sea_horn
+
     )
 
   (comment

@@ -161,7 +161,7 @@ MainWindow::MainWindow(QApplication &app, bool i18n, QSplashScreen* splash)
   show_rec_icon_a = false;
   restoreDocPane = false;
   focusMode = false;
-  version = "2.11.0-dev";
+  version = "2.11.0-relp-electric";
   latest_version = "";
   version_num = 0;
   latest_version_num = 0;
@@ -180,6 +180,12 @@ MainWindow::MainWindow(QApplication &app, bool i18n, QSplashScreen* splash)
     clientSock = new QTcpSocket(this);
   }
 
+
+  this->setWindowFlags(Qt::Widget | Qt::FramelessWindowHint | Qt::NoDropShadowWindowHint);
+  this->setAttribute(Qt::WA_NoSystemBackground, true);
+  this->setAttribute(Qt::WA_TranslucentBackground, true);
+
+
   setupLogPathAndRedirectStdOut();
   printAsciiArtLogo();
 
@@ -191,12 +197,24 @@ MainWindow::MainWindow(QApplication &app, bool i18n, QSplashScreen* splash)
   createToolBar();
   createStatusBar();
   createInfoPane();
-  setWindowTitle(tr("Sonic Pi"));
+  setWindowTitle(tr("Sonic Pi / Custom"));
   initPrefsWindow();
+
   readSettings();
+  updateDarkMode();
+
+
+
+  setUnifiedTitleAndToolBarOnMac(true);
+  setWindowIcon(QIcon(":images/icon-smaller.png"));
+
+  show_tabs->setChecked(false);
+  show_buttons->setChecked(false);
+
   updateTabsVisibility();
   updateButtonVisibility();
   updateLogVisibility();
+    
   initDocsWindow();
 
   //setup autocompletion
@@ -507,6 +525,7 @@ void MainWindow::setupWindowStructure() {
   outputWidget->setWidget(outputPane);
   addDockWidget(Qt::RightDockWidgetArea, outputWidget);
   outputWidget->setObjectName("output");
+  outputTitleWidget = outputWidget->titleBarWidget();
 
   blankWidget = new QWidget();
   outputWidgetTitle = outputWidget->titleBarWidget();
@@ -563,7 +582,6 @@ void MainWindow::setupWindowStructure() {
   errorPane->hide();
   mainWidget->setLayout(mainWidgetLayout);
   setCentralWidget(mainWidget);
-
 }
 
 void MainWindow::escapeWorkspaces() {
@@ -590,6 +608,13 @@ void MainWindow::updateFullScreenMode(){
     outputWidget->setTitleBarWidget(blankWidget);
     this->setWindowFlags(Qt::FramelessWindowHint);
     int currentScreen = QApplication::desktop()->screenNumber(this);
+
+#if defined(Q_OS_MAC)
+    this->setWindowFlags(Qt::FramelessWindowHint | Qt::NoDropShadowWindowHint);
+#else
+    this->setWindowFlags(Qt::FramelessWindowHint);
+#endif
+    this->setWindowState(Qt::WindowFullScreen);
     this->show();
 
 #if QT_VERSION >= 0x050400
@@ -609,7 +634,13 @@ void MainWindow::updateFullScreenMode(){
 			 Qt::WindowMaximizeButtonHint |
 			 Qt::WindowCloseButtonHint);
 #else
+
+#if defined(Q_OS_MAC)
+    this->setWindowFlags(Qt::WindowTitleHint | Qt::NoDropShadowWindowHint);
+#else
     this->setWindowFlags(Qt::WindowTitleHint);
+#endif
+
 #endif
     this->show();
   }
@@ -1112,6 +1143,11 @@ void MainWindow::initPrefsWindow() {
   show_tabs->setToolTip(tr("Toggle visibility of the buffer selection tabs."));
   full_screen = new QCheckBox(tr("Full screen"));
   full_screen->setToolTip(tooltipStrShiftMeta('F', tr("Toggle full screen mode.")));
+
+  wrap_mode = new QCheckBox(tr("Word wrap"));
+  wrap_mode->setToolTip(tr("Wrap long lines. Useful to avoid lots of scrolling."));
+  connect(wrap_mode, SIGNAL(clicked()), this, SLOT(changeWrapMode()));
+
   dark_mode = new QCheckBox(tr("Dark mode"));
   dark_mode->setToolTip(tooltipStrShiftMeta('M', tr("Toggle dark mode.")) + QString(tr("\nDark mode is perfect for live coding in night clubs.")));
   connect(show_line_numbers, SIGNAL(clicked()), this, SLOT(changeShowLineNumbers()));
@@ -1131,6 +1167,7 @@ void MainWindow::initPrefsWindow() {
   editor_display_box_layout->addWidget(show_tabs);
   editor_box_look_feel_layout->addWidget(dark_mode);
   editor_box_look_feel_layout->addWidget(full_screen);
+  editor_box_look_feel_layout->addWidget(wrap_mode);
   editor_display_box->setLayout(editor_display_box_layout);
   editor_look_feel_box->setLayout(editor_box_look_feel_layout);
 
@@ -1243,8 +1280,12 @@ void MainWindow::initPrefsWindow() {
   log_cues->setChecked(settings.value("prefs/log-cues", true).toBool());
   log_auto_scroll->setChecked(settings.value("prefs/log-auto-scroll", true).toBool());
   show_line_numbers->setChecked(settings.value("prefs/show-line-numbers", true).toBool());
+
   enable_external_synths_cb->setChecked(settings.value("prefs/enable-external-synths", false).toBool());
   synth_trigger_timing_guarantees_cb->setChecked(settings.value("prefs/synth-trigger-timing-guarantees", false).toBool());
+
+  wrap_mode->setChecked(settings.value("prefs/wrap-mode", false).toBool());
+
   dark_mode->setChecked(settings.value("prefs/dark-mode", false).toBool());
   mixer_force_mono->setChecked(settings.value("prefs/mixer-force-mono", false).toBool());
   mixer_invert_stereo->setChecked(settings.value("prefs/mixer-invert-stereo", false).toBool());
@@ -1866,8 +1907,17 @@ void MainWindow::changeGUITransparency(int)
 #endif
 {
 #if defined(Q_OS_MAC)
-  // scale it linearly from 0 -> 100 to 0.3 -> 1
-  setWindowOpacity((0.7 * ((100 - (float)val) / 100.0))  + 0.3);
+  //scale it linearly from 0 -> 100 to 0.3 -> 1
+  //setWindowOpacity((0.7 * ((100 - (float)val) / 100.0))  + 0.3);
+  // 0 -> 100  to 0 to 255
+  int newAlpha = round(255.0 * ((float)val / 100));
+  std::cout << "Alpha" << (int)newAlpha;
+  outputPane->setAlphaLevel(newAlpha);
+  for(int i=0; i < tabs->count(); i++){
+    SonicPiScintilla *ws = (SonicPiScintilla *)tabs->widget(i);
+    ws->setAlphaLevel(newAlpha);
+    ws->redraw();
+  }
 #else
     // do nothing
 #endif
@@ -2328,6 +2378,18 @@ void MainWindow::changeShowLineNumbers(){
   }
 }
 
+void MainWindow::changeWrapMode(){
+    for(int i=0; i < tabs->count(); i++){
+      SonicPiScintilla *ws = (SonicPiScintilla *)tabs->widget(i);
+      if (wrap_mode->isChecked()){
+
+        ws->wordWrapOn();
+      } else {
+        ws->wordWrapOff();
+      }
+    }
+}
+
 void MainWindow::setRPSystemAudioHeadphones()
 {
 #if defined(Q_OS_WIN)
@@ -2764,6 +2826,7 @@ void MainWindow::writeSettings()
   settings.setValue("prefs/enable-external-synths", enable_external_synths_cb->isChecked());
   settings.setValue("prefs/synth-trigger-timing-guarantees", synth_trigger_timing_guarantees_cb->isChecked());
   settings.setValue("prefs/dark-mode", dark_mode->isChecked());
+  settings.setValue("prefs/wrap-mode", wrap_mode->isChecked());
   settings.setValue("prefs/mixer-force-mono", mixer_force_mono->isChecked());
   settings.setValue("prefs/mixer-invert-stereo", mixer_invert_stereo->isChecked());
   settings.setValue("prefs/", mixer_invert_stereo->isChecked());
@@ -3111,8 +3174,6 @@ bool MainWindow::eventFilter(QObject *obj, QEvent *evt)
     }
     return QMainWindow::eventFilter(obj, evt);
 }
-
-
 
 QString MainWindow::sonicPiHomePath() {
   QString path = qgetenv("SONIC_PI_HOME").constData();

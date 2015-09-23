@@ -17,9 +17,30 @@
 #
 #-------------------------------------------------
 
+# -- Change to match the location of QScintilla on your system
+#
+#--
+# This file is part of Sonic Pi: http://sonic-pi.net
+# Full project source: https://github.com/samaaron/sonic-pi
+# License: https://github.com/samaaron/sonic-pi/blob/master/LICENSE.md
+#
+# Copyright 2013, 2014, 2015, 2016 by Sam Aaron (http://sam.aaron.name).
+# All rights reserved.
+#
+# Permission is granted for use, copying, modification, distribution,
+# and distribution of modified versions of this work as long as this
+# notice is included.
+#++
+
+#-------------------------------------------------
+#
+# Project created by QtCreator 2014-02-28T14:51:06
+#
+#-------------------------------------------------
+
 TARGET = 'sonic-pi'
 CONFIG += qscintilla2 qwt c++11
-
+QMAKE_MAC_SDK = macosx10.11
 QT += core gui concurrent network 
 greaterThan(QT_MAJOR_VERSION, 4) {
   QT += widgets
@@ -47,6 +68,7 @@ macx {
   QMAKE_CXXFLAGS += -Wall -Werror -Wextra -Wno-unused-variable -Wno-unused-parameter
   CONFIG += warn_off
   TARGET = 'Sonic Pi'
+  QT += opengl
 }
 
 # Windows only

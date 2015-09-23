@@ -18,13 +18,34 @@
 #include <QDrag>
 #include <QDragEnterEvent>
 #include <QDropEvent>
+#include <QPainter>
+#include <QKeyEvent>
+
 #include <Qsci/qscicommandset.h>
 #include <Qsci/qscilexer.h>
+#include <QDateTime>
+#include <QMap>
+
+void SonicPiScintilla::keyPressEvent( QKeyEvent *k )
+{
+    if(activeKeys.contains(k->key()) == false){
+        activeKeys.insert(k->key(),true);
+        qDebug() << "{\"event\": \"keyPress\", \"data:\" \""<< (k->key()) << "\", \"ts\":" << QDateTime::currentMSecsSinceEpoch()  << "}";
+    }
+    QsciScintilla::keyPressEvent(k);
+}
+
+void SonicPiScintilla::keyReleaseEvent(QKeyEvent * k){
+    activeKeys.remove(k->key());
+    qDebug() << "{\"event\": \"keyRelease\", \"data:\" \""<< (k->key()) << "\", \"ts\":" << QDateTime::currentMSecsSinceEpoch()  << "}";
+    QsciScintilla::keyReleaseEvent(k);
+}
 
 SonicPiScintilla::SonicPiScintilla(SonicPiLexer *lexer, SonicPiTheme *theme)
   : QsciScintilla()
 {
   setAcceptDrops(true);
+  this->activeKeys =  QMap<int, bool>();
   this->theme = theme;
   standardCommands()->clearKeys();
   standardCommands()->clearAlternateKeys();
@@ -50,19 +71,19 @@ SonicPiScintilla::SonicPiScintilla(SonicPiLexer *lexer, SonicPiTheme *theme)
   addOtherKeyBinding(settings, QsciCommand::LineUp, Qt::Key_Up);
   addKeyBinding(settings, QsciCommand::LineUpExtend, Qt::Key_Up | Qt::SHIFT);
 
-  addKeyBinding(settings, QsciCommand::CharRight, Qt::Key_F | SPi_CTRL);
+  addKeyBinding(settings, QsciCommand::CharRight, Qt::Key_B | SPi_CTRL);
   addOtherKeyBinding(settings, QsciCommand::CharRight, Qt::Key_Right);
   addKeyBinding(settings, QsciCommand::CharRightExtend, Qt::Key_Right | Qt::SHIFT);
 
-  addKeyBinding(settings, QsciCommand::WordRight, Qt::Key_F | SPi_META);
+  addKeyBinding(settings, QsciCommand::WordRight, Qt::Key_B | SPi_META);
   addOtherKeyBinding(settings, QsciCommand::WordRight, Qt::Key_Right | SPi_CTRL);
   addKeyBinding(settings, QsciCommand::WordRightExtend, Qt::Key_Right | SPi_CTRL | Qt::SHIFT);
 
-  addKeyBinding(settings, QsciCommand::CharLeft, Qt::Key_B | SPi_CTRL);
+  addKeyBinding(settings, QsciCommand::CharLeft, Qt::Key_F | SPi_CTRL);
   addOtherKeyBinding(settings, QsciCommand::CharLeft, Qt::Key_Left);
   addKeyBinding(settings, QsciCommand::CharLeftExtend, Qt::Key_Left | Qt::SHIFT);
 
-  addKeyBinding(settings, QsciCommand::WordLeft, Qt::Key_B | SPi_META);
+  addKeyBinding(settings, QsciCommand::WordLeft, Qt::Key_F | SPi_META);
   addOtherKeyBinding(settings, QsciCommand::WordLeft, Qt::Key_Left | SPi_CTRL);
   addKeyBinding(settings, QsciCommand::WordLeftExtend, Qt::Key_Left | SPi_CTRL | Qt::SHIFT);
 
@@ -142,7 +163,10 @@ SonicPiScintilla::SonicPiScintilla(SonicPiLexer *lexer, SonicPiTheme *theme)
   setAutoCompletionSource(SonicPiScintilla::AcsAPIs);
   setAutoCompletionCaseSensitivity(false);
 
-  setSelectionBackgroundColor(theme->color("SelectionBackground"));
+  QColor selBack = theme->color("SelectionBackground");
+  selBack.setAlpha(100);
+  setSelectionBackgroundColor(selBack);
+
   setSelectionForegroundColor(theme->color("SelectionForeground"));
   setCaretWidth(5);
   setCaretForegroundColor(theme->color("CaretForeground"));
@@ -153,10 +177,15 @@ SonicPiScintilla::SonicPiScintilla(SonicPiLexer *lexer, SonicPiTheme *theme)
 
 }
 
+
 void SonicPiScintilla::redraw(){
   setMarginsBackgroundColor(theme->color("MarginBackground"));
   setMarginsForegroundColor(theme->color("MarginForeground"));
-  setSelectionBackgroundColor(theme->color("SelectionBackground"));
+
+  QColor selBack = theme->color("SelectionBackground");
+  selBack.setAlpha(100);
+  setSelectionBackgroundColor(selBack);
+
   setSelectionForegroundColor(theme->color("SelectionForeground"));
   setCaretLineBackgroundColor(theme->color("CaretLineBackground"));
   setFoldMarginColors(theme->color("FoldMarginForeground"),theme->color("FoldMarginForeground"));
@@ -166,7 +195,9 @@ void SonicPiScintilla::redraw(){
 }
 
 void SonicPiScintilla::highlightAll(){
-  setCaretLineBackgroundColor("deeppink");
+    QColor back = theme->color("CaretLineBackground");
+    back.setAlpha(100);
+    setCaretLineBackgroundColor(back);
 }
 
 void SonicPiScintilla::unhighlightAll(){
@@ -184,6 +215,29 @@ void SonicPiScintilla::showLineNumbers(){
   setMarginWidth(0, "1000");
   SendScintilla(SCI_SHOWLINES);
 }
+
+void SonicPiScintilla::wordWrapOn(){
+    setWrapMode(WrapMode::WrapWord);
+}
+
+void SonicPiScintilla::wordWrapOff(){
+    setWrapMode(WrapMode::WrapNone);
+}
+
+
+void SonicPiScintilla::paintEvent( QPaintEvent *event)
+{
+    QPainter painter(this->viewport());
+    painter.setCompositionMode( QPainter::CompositionMode_Clear );
+    painter.setPen(Qt::transparent);
+    painter.setBrush(Qt::transparent);
+
+    painter.fillRect(this->viewport()->rect(), Qt::transparent);
+    painter.setCompositionMode( QPainter::CompositionMode_SourceOver);
+    QsciScintillaBase::paintEvent(event);
+    painter.end();
+}
+
 
 void SonicPiScintilla::addOtherKeyBinding(QSettings &qs, int cmd, int key)
 {

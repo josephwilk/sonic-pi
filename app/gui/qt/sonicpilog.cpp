@@ -13,6 +13,7 @@
 
 
 #include "sonicpilog.h"
+#include "QPainter"
 
 // Standard stuff
 #include <vector>
@@ -21,12 +22,34 @@
 
 SonicPiLog::SonicPiLog(QWidget *parent) : QPlainTextEdit(parent)
 {
+  QPalette pal = palette();
+  pal.setBrush(QPalette::Base, Qt::transparent);
+  pal.setBrush(QPalette::Window, Qt::transparent);
+  setPalette(pal);
   forceScroll = true;
 }
 
 void SonicPiLog::forceScrollDown(bool force)
 {
   forceScroll = force;
+}
+
+void SonicPiLog::setAlphaLevel(int level){
+    alphaLevel = level;
+    this->viewport()->repaint();
+}
+
+
+void SonicPiLog::paintEvent(QPaintEvent *e){
+    QPainter p(this->viewport());
+    p.setCompositionMode(QPainter::CompositionMode_Clear);
+    p.fillRect(this->viewport()->rect(), QColor(0,0,0,alphaLevel));
+    p.setCompositionMode(QPainter::CompositionMode_SourceOver);
+    p.fillRect(this->viewport()->rect(), QColor(0,0,0,alphaLevel));
+    p.setPen(QColor(0,0,0,alphaLevel));
+    p.setBrush(QColor(0,0,0,alphaLevel));
+    QPlainTextEdit::paintEvent(e);
+    p.end();
 }
 
 
@@ -39,6 +62,7 @@ void SonicPiLog::setTextColor(QColor c)
 
 void SonicPiLog::setTextBackgroundColor(QColor c)
 {
+  c.setAlpha(alphaLevel);
   QTextCharFormat tf;
   tf.setBackground(c);
   setCurrentCharFormat(tf);
@@ -58,7 +82,9 @@ void SonicPiLog::handleMultiMessage(SonicPiLog::MultiMessage mm)
     QString ss;
 
     tf.setForeground(theme->color("LogDefaultForeground"));
-    tf.setBackground(theme->color("LogBackground"));
+    QColor bg = theme->color("LogBackground");
+    bg.setAlpha(alphaLevel);
+    tf.setBackground(bg);
     setCurrentCharFormat(tf);
 
     ss.append("{run: ").append(QString::number(mm.job_id));
@@ -132,8 +158,20 @@ void SonicPiLog::handleMultiMessage(SonicPiLog::MultiMessage mm)
         }
       }
 
+      ss.append(QString::fromUtf8(s.c_str()));
+
+      if(ss.contains("sample ")){
+          tf.setForeground((QColor("#9f72fe")));
+          QRegExp m("\"(.*)/([^////]*)\"");
+          ss.replace(m,"\"\\2\"");
+       }
+
+      setCurrentCharFormat(tf);
+
+      insertPlainText(ss);
+
       tf.setForeground(theme->color("LogDefaultForeground"));
-      tf.setBackground(theme->color("LogBackground"));
+      tf.setBackground(bg);
       setCurrentCharFormat(tf);
     }
     appendPlainText(QString::fromStdString(" "));
