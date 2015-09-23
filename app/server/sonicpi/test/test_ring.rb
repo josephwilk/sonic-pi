@@ -12,11 +12,15 @@
 #++
 
 require_relative "./setup_test"
+<<<<<<< HEAD
 require_relative "../lib/sonicpi/spiderapi"
+=======
+require_relative "../lib/sonicpi/lang/core"
+>>>>>>> ab4f4321170346e77bc4683693d3103cc1ec7a77
 
 module SonicPi
   class RingTester < Test::Unit::TestCase
-    include SonicPi::SpiderAPI
+    include SonicPi::Lang::Core
 
     def test_stretch
       assert_equal([:e1, :e1, :e1, :e2, :e2, :e2], stretch([:e1,:e2], 3))

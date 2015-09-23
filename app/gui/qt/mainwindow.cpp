@@ -382,8 +382,11 @@ MainWindow::MainWindow(QApplication &app, bool i18n, QSplashScreen* splash)
   policy.setHorizontalStretch(QSizePolicy::Maximum);
   docPane->setSizePolicy(policy);
   docPane->setMinimumHeight(200);
+  docPane->setOpenLinks(false); // send to anchorClicked instead
   docPane->setOpenExternalLinks(true);
   docPane->setStyleSheet(defaultTextBrowserStyle);
+  connect(docPane, SIGNAL(anchorClicked(QUrl)), this,
+	  SLOT(docAnchorClicked(QUrl)));
 
   QShortcut *up = new QShortcut(ctrlKey('p'), docPane);
   up->setContext(Qt::WidgetShortcut);
@@ -465,6 +468,10 @@ MainWindow::MainWindow(QApplication &app, bool i18n, QSplashScreen* splash)
   updateLogVisibility();
   updateDarkMode();
   requestVersion();
+}
+
+void MainWindow::docAnchorClicked(const QUrl &url) {
+  std::cout << "anchor clicked: " << url.toString().toStdString() << std::endl;
 }
 
 void MainWindow::changeTab(int id){

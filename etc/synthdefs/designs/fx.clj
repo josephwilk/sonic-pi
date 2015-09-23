@@ -87,6 +87,10 @@
     bits_slide 0
     bits_slide_shape 5
     bits_slide_curve 0
+    cutoff 0
+    cutoff_slide 0
+    cutoff_slide_shape 5
+    cutoff_slide_curve 0
     in_bus 0
     out_bus 0]
    (let [amp           (varlag amp amp_slide amp_slide_curve amp_slide_shape)
@@ -94,8 +98,13 @@
          pre_amp       (varlag pre_amp pre_amp_slide pre_amp_slide_curve pre_amp_slide_shape)
          sample_rate   (varlag sample_rate sample_rate_slide sample_rate_slide_curve sample_rate_slide_shape)
          bits          (varlag bits bits_slide bits_slide_curve bits_slide_shape)
+         cutoff        (varlag cutoff cutoff_slide cutoff_slide_curve cutoff_slide_shape)
+         cutoff-freq   (midicps cutoff)
+         use-filter    (> cutoff 0)
          [in-l in-r]   (* pre_amp (in in_bus 2))
          [new-l new-r] (decimator [in-l in-r] sample_rate bits)
+         new-l         (select use-filter [new-l (lpf new-l cutoff-freq)])
+         new-r         (select use-filter [new-r (lpf new-r cutoff-freq)])
          fin-l         (x-fade2 in-l new-l (- (* mix 2) 1) amp)
          fin-r         (x-fade2 in-r new-r (- (* mix 2) 1) amp)]
      (out out_bus [fin-l fin-r])))
@@ -687,7 +696,47 @@
          fin-r         (x-fade2 in-r new-r (- (* mix 2) 1) amp)]
      (out out_bus [fin-l fin-r])))
 
+ (defsynth sonic-pi-fx_band_eq
+   [amp 1
+    amp_slide 0
+    amp_slide_shape 5
+    amp_slide_curve 0
+    mix 1
+    mix_slide 0
+    mix_slide_shape 5
+    mix_slide_curve 0
+    pre_amp 1
+    pre_amp_slide 0
+    pre_amp_slide_shape 5
+    pre_amp_slide_curve 0
+    freq 100
+    freq_slide 0
+    freq_slide_shape 5
+    freq_slide_curve 0
+    res 0.6
+    res_slide 0
+    res_slide_shape 5
+    res_slide_curve 0
+    db 0.6
+    db_slide 0
+    db_slide_shape 5
+    db_slide_curve 0
+    in_bus 0
+    out_bus 0]
+   (let [amp           (varlag amp amp_slide amp_slide_curve amp_slide_shape)
+         mix           (varlag mix mix_slide mix_slide_curve mix_slide_shape)
+         res           (lin-lin res 1 0 0 1)
+         res           (varlag res res_slide res_slide_curve res_slide_shape)
+         db            (varlag db db_slide db_slide_curve db_slide_shape)
+         pre_amp       (varlag pre_amp pre_amp_slide pre_amp_slide_curve pre_amp_slide_shape)
+         freq          (varlag freq freq_slide freq_slide_curve freq_slide_shape)
+         freq          (midicps freq)
 
+         [in-l in-r]   (* pre_amp (in in_bus 2))
+         [new-l new-r] (mid-eq [in-l in-r] freq res db)
+         fin-l         (x-fade2 in-l new-l (- (* mix 2) 1) amp)
+         fin-r         (x-fade2 in-r new-r (- (* mix 2) 1) amp)]
+     (out out_bus [fin-l fin-r])))
 
  (defsynth sonic-pi-fx_rlpf
    [amp 1
@@ -1391,6 +1440,7 @@
    (core/save-synthdef sonic-pi-fx_wobble)
    (core/save-synthdef sonic-pi-fx_ixi_techno)
    (core/save-synthdef sonic-pi-fx_compressor)
+   (core/save-synthdef sonic-pi-fx_band_eq)
    (core/save-synthdef sonic-pi-fx_rlpf)
    (core/save-synthdef sonic-pi-fx_nrlpf)
    (core/save-synthdef sonic-pi-fx_rhpf)

@@ -1,4 +1,4 @@
-#--
+1#--
 # This file is part of Sonic Pi: http://sonic-pi.net
 # Full project source: https://github.com/samaaron/sonic-pi
 # License: https://github.com/samaaron/sonic-pi/blob/master/LICENSE.md
@@ -199,6 +199,16 @@ module SonicPi
       File.absolute_path("#{server_path}/native/#{os}")
     end
 
+    def ruby_path
+      # For running tests
+      case os
+      when :windows
+        File.join(native_path, "bin", "ruby.exe")
+      when :osx, :raspberry, :linux
+        File.join(native_path, "ruby", "bin", "ruby")
+      end
+    end
+
     def user_settings_path
       File.absolute_path("#{home_dir}/settings.json")
     end
@@ -289,7 +299,7 @@ module SonicPi
     def arg_h_pp(arg_h)
       s = "{"
       arg_h.each do |k, v|
-        rounded = v.is_a?(Float) ? v.round(4) : v
+        rounded = v.is_a?(Float) ? v.round(4) : v.inspect
         s << "#{k}: #{rounded}, "
       end
       s.chomp(", ") << "}"
