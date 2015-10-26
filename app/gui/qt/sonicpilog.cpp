@@ -3,9 +3,25 @@
 // Standard stuff
 #include <vector>
 #include "sonicpitheme.h"
+#include <QPainter>
 
 SonicPiLog::SonicPiLog(QWidget *parent) : QPlainTextEdit(parent)
 {
+    QPalette pal = palette();
+    pal.setBrush(QPalette::Base, QColor(0,0,0,5));
+    pal.setBrush(QPalette::Window, QColor(0,0,0,5));
+    setPalette(pal);
+}
+
+void SonicPiLog::paintEvent(QPaintEvent *e){
+    QPainter p(this->viewport());
+    p.setCompositionMode(QPainter::CompositionMode_Clear);
+    p.setPen(Qt::transparent);
+    p.setBrush(Qt::transparent);
+    p.fillRect(this->viewport()->rect(), Qt::transparent);
+    p.setCompositionMode(QPainter::CompositionMode_SourceOver);
+    QPlainTextEdit::paintEvent(e);
+    p.end();
 }
 
 void SonicPiLog::setTextColor(QColor c)
@@ -18,7 +34,6 @@ void SonicPiLog::setTextColor(QColor c)
 void SonicPiLog::setTextBackgroundColor(QColor c)
 {
   QTextCharFormat tf;
-  tf.setBackground(c);
   setCurrentCharFormat(tf);
 }
 
@@ -98,8 +113,9 @@ void SonicPiLog::handleMultiMessage(SonicPiLog::MultiMessage mm)
       insertPlainText(ss);
 
       tf.setForeground(theme->color("LogDefaultForeground"));
-      tf.setBackground(theme->color("LogBackground"));
+      //tf.setBackground(theme->color("LogBackground"));
       setCurrentCharFormat(tf);
     }
     appendPlainText(QString::fromStdString(" "));
+    update();
 }

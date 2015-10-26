@@ -59,6 +59,9 @@ class SonicPiScintilla : public QsciScintilla
     void zoomFontIn();
     void zoomFontOut();
 
+  protected:
+        void paintEvent(QPaintEvent *e);
+
  private:
     void addKeyBinding(QSettings &qs, int cmd, int key);
     void addOtherKeyBinding(QSettings &qs, int cmd, int key);

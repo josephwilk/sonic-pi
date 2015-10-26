@@ -127,11 +127,11 @@ QMap<QString, QString> SonicPiTheme::darkTheme(){
     themeSettings["HighlightedBackground"] = "deeppink";
     themeSettings["HighlightedForeground"] = "#fff";
     themeSettings["WindowForeground"] = "#fff";
-    themeSettings["WindowBackground"] = "#2c3539";
+    themeSettings["WindowBackground"] = "transparent";
     themeSettings["PaneBackground"] = "black";
     themeSettings["WindowBorder"]= "#222";
     themeSettings["Foreground"] = "white";
-    themeSettings["Background"] = "black";
+    themeSettings["Background"] = "transparent";
     themeSettings["ErrorBackground"] = "black";
 
     themeSettings["DefaultForeground"]               = "#fff";
@@ -160,7 +160,7 @@ QMap<QString, QString> SonicPiTheme::darkTheme(){
     themeSettings["PercentStringrForeground"]        = "#6e88ff";
     themeSettings["PercentStringwForeground"]        = "#6e88ff";
 
-    themeSettings["DefaultBackground"]               = "#000";
+    themeSettings["DefaultBackground"]               = "transparent";
     themeSettings["CommentBackground"]               = "white";
     themeSettings["ErrorBackground"]                 = "#c0xffc0";
     themeSettings["PODBackground"]                   = "#ff0000";
@@ -185,20 +185,20 @@ QMap<QString, QString> SonicPiTheme::darkTheme(){
     themeSettings["FunctionMethodNameBackground"]    = "white";
 
     themeSettings["MarginBackground"]            = "#111";
-    themeSettings["MarginForeground"]            = "dark gray";
+    themeSettings["MarginForeground"]            = "transparent";
     themeSettings["SelectionBackground"]         = "DeepPink";
     themeSettings["SelectionForeground"]         = "white";
-    themeSettings["MatchedBraceBackground"]      = "dimgray";
+    themeSettings["MatchedBraceBackground"]      = "transparent";
     themeSettings["MatchedBraceForeground"]      = "white";
     themeSettings["BraceForeground"]             = "white";
 
     themeSettings["CaretForeground"]             = "deep pink";
-    themeSettings["CaretLineBackground"]         = "#111";
+    themeSettings["CaretLineBackground"]         = "transparent";
 
     themeSettings["IndentationGuidesForeground"] = "#4D4DFF";
     themeSettings["FoldMarginForeground"]        = "black";
 
-    themeSettings["LogBackground"] = "black";
+    themeSettings["LogBackground"] = "transparent";
     themeSettings["LogForeground"] = "white";
     themeSettings["LogInfoBackground"] = "#2c3539";
     themeSettings["LogInfoForeground"] = "white";

@@ -19,6 +19,7 @@
 #include <fstream>
 
 // Qt stuff
+#include <QPainter>
 #include <QDate>
 #include <QDesktopServices>
 #include <QDir>
@@ -111,6 +112,13 @@ MainWindow::MainWindow(QApplication &app, bool i18n, QSplashScreen* splash)
   guiID = QUuid::createUuid().toString();
   loaded_workspaces = false;
   this->splash = splash;
+
+  this->setWindowFlags(Qt::Widget | Qt::FramelessWindowHint);
+  // this->setParent(0); // Create TopLevel-Widget
+   this->setAttribute(Qt::WA_NoSystemBackground, false);
+   this->setAttribute(Qt::WA_TranslucentBackground, true);
+  //this->setAttribute(Qt::WA_TransparentForMouseEvents, true);
+
   protocol = UDP;
 
   if(protocol == TCP){
@@ -147,6 +155,7 @@ MainWindow::MainWindow(QApplication &app, bool i18n, QSplashScreen* splash)
   version_num = 0;
   latest_version_num = 0;
   outputPane = new SonicPiLog;
+  outputPane->viewport()->setAutoFillBackground(false);
   errorPane = new QTextBrowser;
   errorPane->setOpenExternalLinks(true);
 
