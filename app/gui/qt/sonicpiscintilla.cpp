@@ -154,6 +154,19 @@ SonicPiScintilla::SonicPiScintilla(SonicPiLexer *lexer, SonicPiTheme *theme)
 
 }
 
+void SonicPiScintilla::paintEvent( QPaintEvent *event)
+{
+    QPainter painter(this->viewport());
+    painter.setCompositionMode( QPainter::CompositionMode_Clear );
+    painter.setPen(Qt::transparent);
+    painter.setBrush(Qt::transparent);
+
+    painter.fillRect(this->viewport()->rect(), Qt::transparent);
+    painter.setCompositionMode( QPainter::CompositionMode_SourceOver);
+    QsciScintillaBase::paintEvent(event);
+    painter.end();
+}
+
 void SonicPiScintilla::redraw(){
   setMarginsBackgroundColor(theme->color("MarginBackground"));
   setMarginsForegroundColor(theme->color("MarginForeground"));
