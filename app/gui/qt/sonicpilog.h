@@ -36,6 +36,7 @@ public slots:
     void handleMultiMessage(SonicPiLog::MultiMessage mm);
 
 protected:
+  void paintEvent(QPaintEvent *e);
 };
 
 Q_DECLARE_METATYPE(SonicPiLog::MultiMessage)

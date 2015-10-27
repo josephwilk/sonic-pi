@@ -14,6 +14,17 @@ SonicPiLog::SonicPiLog(QWidget *parent) : QPlainTextEdit(parent)
   this->setAttribute(Qt::WA_PaintOnScreen); // not needed in Qt 5.2 and up
 }
 
+void SonicPiLog::paintEvent(QPaintEvent *e){
+    QPainter p(this->viewport());
+    p.setCompositionMode(QPainter::CompositionMode_Clear);
+    p.setPen(Qt::transparent);
+    p.setBrush(Qt::transparent);
+    p.fillRect(this->viewport()->rect(), Qt::transparent);
+    p.setCompositionMode(QPainter::CompositionMode_SourceOver);
+    QPlainTextEdit::paintEvent(e);
+    p.end();
+}
+
 void SonicPiLog::setTextColor(QColor c)
 {
   QTextCharFormat tf;
