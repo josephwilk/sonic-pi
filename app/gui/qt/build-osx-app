@@ -53,6 +53,9 @@ ln -s ../../../../app/ ./
 ln -s ../../../../etc/ ./
 ln -s /Applications/SuperCollider/SuperCollider.app/Contents/Resources/scsynth ../../../../app/server/native/osx/scsynth
 
+cd 'Contents/MacOS'
+install_name_tool -change "libqscintilla2.12.dylib" "/Users/josephwilk/Workspace/c++/QScintilla-gpl-2.9/Qt4Qt5/libqscintilla2.12.dylib" "Sonic Pi"
+
 ### FOR FINAL RELEASE ONLY MOVE THIS INTO package-osx-app ###
 #rsync -arv ../../../../app ./
 #rsync -arv ../../../../etc ./
