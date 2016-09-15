@@ -522,6 +522,7 @@ void MainWindow::setupWindowStructure() {
   prefsWidget->setObjectName("prefs");
 
   outputWidget = new QDockWidget(tr("Log"), this);
+  outputWidget->setTitleBarWidget(new QWidget());
   outputWidget->setFocusPolicy(Qt::NoFocus);
   outputWidget->setFeatures(QDockWidget::NoDockWidgetFeatures);
   outputWidget->setAllowedAreas(Qt::RightDockWidgetArea);
