@@ -572,6 +572,8 @@ void MainWindow::setupWindowStructure() {
   addDockWidget(Qt::BottomDockWidgetArea, docWidget);
   docWidget->hide();
 
+  statusBar()->hide();
+
   // Currently causes a segfault when dragging doc pane out of main
   // window:
   // connect(docWidget, SIGNAL(visibilityChanged(bool)), this,
