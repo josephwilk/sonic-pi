@@ -162,8 +162,8 @@ void SonicPiLog::handleMultiMessage(SonicPiLog::MultiMessage mm)
 
       if(ss.contains("sample ")){
           tf.setForeground((QColor("#9f72fe")));
-          QRegExp m("\"(.*)/([^////]*)\"");
-          ss.replace(m,"\"\\2\"");
+          //QRegExp m("\"(.*)/([^////]*)\"");
+          //ss.replace(m,"\"\\2\"");
        }
 
       setCurrentCharFormat(tf);
