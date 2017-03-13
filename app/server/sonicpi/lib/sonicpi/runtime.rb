@@ -288,7 +288,7 @@ module SonicPi
       else
         m = l.match(/.*:([0-9]+):/)
         if m
-          return m[1].to_i
+          return (m[1].to_i) -2
         else
           return -1
         end
@@ -306,7 +306,7 @@ module SonicPi
         # TODO: Remove this hack when we have projects
         w = info[:workspace]
 
-        w = "buffer " + w[0..10]
+        w = "buffer " + w
         # TODO: end of hack
 
         res = res + "[#{w}, line #{line}]"
@@ -745,11 +745,11 @@ module SonicPi
             _, line, message = *e.message.match(/\A.*:([0-9]+): (.*)/)
             error_line = ""
             if line
-              line = line.to_i
+              line = line.to_i - 2 #This should really happen automatically....
 
               # TODO: Remove this hack when we have projects
               w = info[:workspace]
-              w = "buffer " + w[10..-1]
+              w = "buffer  " + w
               # TODO: end of hack
 
               err_msg = "[#{w}, line #{line}] \n #{message}"
@@ -763,6 +763,7 @@ module SonicPi
             __info("Syntax error in run #{id}. Code ignored.")
           end
         rescue Exception => e
+          __info("Abort")
           __no_kill_block do
             __info("Aborted Run #{id}")
             __error(e)
@@ -1028,41 +1029,23 @@ module SonicPi
           end
         end
       end
-      __info "Welcome to Sonic Pi", 1
-      __info "Session #{@session_id[0..7]}"
-      date = Time.now.freeze
-      __info "#{date.strftime("%A")} #{date.day.ordinalize} #{date.strftime("%B, %Y")}"
-      __info "%02d:%02d, %s" % [date.hour, date.min, date.zone]
-
-      __info [
-"Hello, somewhere in the world
-   the sun is shining
-   for you right now.",
-"Hello, it's lovely to see
-   you again. I do hope that
-   you're well.",
-"Turn your head towards the sun
-   and the shadows
-   will fall
-   behind you."].sample, 1
-
+      #__info "👂🏻", 1
+      #__info "Session #{@session_id[0..7]}"
+      #date = Time.now.freeze
+      #__info "#{date.strftime("%A")} #{date.day.ordinalize} #{date.strftime("%B, %Y")}"
+      #__info "%02d:%02d, %s" % [date.hour, date.min, date.zone]
+      __info ["d[-_-]b", "d[*_*]b"].sample, 1
       msg = @settings.get(:message) || ""
       msg = msg.strip
-
-      __print_version_outdated_info if @version < @server_version
-
+      #__print_version_outdated_info if @version < @server_version
       __info msg unless msg.empty?
-
-
       load_snippets(snippets_path, true)
+      #if safe_mode?
+      #  __info "!!WARNING!! - file permissions issue:\n   Unable to write to folder #{home_dir} \n   Booting in SAFE MODE.\n   Buffer auto-saving is disabled, please save your work manually.", 1
+      #end
 
-      if safe_mode?
-        __info "!!WARNING!! - file permissions issue:\n   Unable to write to folder #{home_dir} \n   Booting in SAFE MODE.\n   Buffer auto-saving is disabled, please save your work manually.", 1
-      end
-
-      log "Unable to initialise git repo at #{project_path}" unless @gitsave
-
-      __info "#{@version} Ready..."
+      #log "Unable to initialise git repo at #{project_path}" unless @gitsave
+      #__info "🦄 "
 
     end
 
