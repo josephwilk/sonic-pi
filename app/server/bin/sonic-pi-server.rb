@@ -145,7 +145,7 @@ osc_server.add_method("/save-and-run-buffer-via-local-file") do |args|
   path = args[2].force_encoding("utf-8")
   code = File.read(File.expand_path(path.to_s))
   workspace = args[3]
-  sp.__save_buffer(buffer_id, code)
+  #sp.__save_buffer(buffer_id, code)
   sp.__spider_eval code, {workspace: workspace}
 end
 
