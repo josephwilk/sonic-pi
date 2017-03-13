@@ -61,6 +61,11 @@ module SonicPi
       nodes
     end
 
+    def synths
+      raise "Sub nodes not registered!" if @sub_nodes.empty?
+      @sub_nodes
+    end
+
     def nodes
       raise "Sub nodes not registered!" if @sub_nodes.empty?
       @sub_nodes
