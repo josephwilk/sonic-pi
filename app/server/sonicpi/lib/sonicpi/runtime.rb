@@ -288,7 +288,7 @@ module SonicPi
       else
         m = l.match(/.*:([0-9]+):/)
         if m
-          return (m[1].to_i) -2
+          return (m[1].to_i)
         else
           return -1
         end
@@ -745,7 +745,7 @@ module SonicPi
             _, line, message = *e.message.match(/\A.*:([0-9]+): (.*)/)
             error_line = ""
             if line
-              line = line.to_i - 2 #This should really happen automatically....
+              line = line.to_i
 
               # TODO: Remove this hack when we have projects
               w = info[:workspace]
