@@ -40,7 +40,7 @@
 
 TARGET = 'sonic-pi'
 CONFIG += qscintilla2 qwt c++11
-QMAKE_MAC_SDK = macosx10.11
+QMAKE_MAC_SDK = macosx10.12
 QT += core gui concurrent network 
 greaterThan(QT_MAJOR_VERSION, 4) {
   QT += widgets

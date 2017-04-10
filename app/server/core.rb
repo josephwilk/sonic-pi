@@ -776,6 +776,9 @@ class Object
       (self.is_a?(SonicPi::Core::SPVector) && self.all? {|el| el.sp_thread_safe?})
   end
 
+  def _
+    nil
+  end
 
   def ring
     self.to_a.ring

@@ -31,6 +31,15 @@ module SonicPi
           raise PreParseError, "You may not use the built-in fn names as variable names.\n You attempted to use: #{fn}"
         end
       end
+
+      fn = "zring"
+      rb.gsub!(/\((\s*)#{fn}([,[:space:]]+)/) {|s| ' ' + $1 + "ring" + '(*%W{' + (' ' * ($2.size - 1))}
+
+      rb.gsub!(/:([a-zA-Z0-9\!\?=_]+(:[a-zA-Z0-9\!\?=_]+[a-zA-Z0-9\!\?=_])+)/){|s| "::SonicPi::SPSym.new(#{$1.split(':').map(&:to_sym)})"}
+
+      if rb.match(/(?!\B)\W?#{fn}\s*=[\s\w]/)
+        raise PreParseError, "You may not use the built-in fn names as variable names.\n You attempted to use: #{fn}"
+      end
       rb
     end
   end
