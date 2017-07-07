@@ -30,11 +30,11 @@ unix:!macx {
 
 # Mac OS X only
 macx {
-  QMAKE_CXXFLAGS += -I/usr/local/include
+  QMAKE_CXXFLAGS += -I/usr/local/include -I/Users/josephwilk/Workspace/josephwilk/c++/qscintilla/Qt4Qt5
   QMAKE_CXXFLAGS += -Wall -Werror -Wextra -Wno-unused-variable -Wno-unused-parameter
   CONFIG += warn_off
   TARGET = 'Sonic Pi'
-  LIBS += -lqscintilla2
+  LIBS += -L/Users/josephwilk/Workspace/josephwilk/c++/qscintilla/Qt4Qt5 -lqscintilla2_qt5
 }
 
 # Windows only

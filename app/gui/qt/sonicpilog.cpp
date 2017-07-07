@@ -18,9 +18,14 @@
 #include <vector>
 #include "sonicpitheme.h"
 #include <QScrollBar>
+#include "QPainter"
 
 SonicPiLog::SonicPiLog(QWidget *parent) : QPlainTextEdit(parent)
 {
+  QPalette pal = palette();
+  pal.setBrush(QPalette::Base, Qt::transparent);
+  pal.setBrush(QPalette::Window, Qt::transparent);
+  setPalette(pal);
   forceScroll = true;
 }
 
@@ -29,6 +34,22 @@ void SonicPiLog::forceScrollDown(bool force)
   forceScroll = force;
 }
 
+void SonicPiLog::setAlphaLevel(int level){
+    alphaLevel = level;
+    this->viewport()->repaint();
+}
+
+void SonicPiLog::paintEvent(QPaintEvent *e){
+    QPainter p(this->viewport());
+    p.setCompositionMode(QPainter::CompositionMode_Clear);
+    p.fillRect(this->viewport()->rect(), QColor(0,0,0,alphaLevel));
+    p.setCompositionMode(QPainter::CompositionMode_SourceOver);
+    p.fillRect(this->viewport()->rect(), QColor(0,0,0,alphaLevel));
+    p.setPen(QColor(0,0,0,alphaLevel));
+    p.setBrush(QColor(0,0,0,alphaLevel));
+    QPlainTextEdit::paintEvent(e);
+    p.end();
+}
 
 void SonicPiLog::setTextColor(QColor c)
 {

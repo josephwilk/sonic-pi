@@ -155,6 +155,7 @@ private slots:
     void updateDarkMode();
     void updatePrefsIcon();
     void togglePrefs();
+	void changeWrapMode();
     void updateDocPane(QListWidgetItem *cur);
     void updateDocPane2(QListWidgetItem *cur, QListWidgetItem *prev);
     void showWindow();
@@ -320,6 +321,7 @@ private:
     QCheckBox *enable_external_synths_cb;
     QCheckBox *synth_trigger_timing_guarantees_cb;
     QCheckBox *show_line_numbers;
+    QCheckBox *wrap_mode;
     QCheckBox *auto_indent_on_run;
     QCheckBox *full_screen;
     QCheckBox *show_log;

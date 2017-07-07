@@ -19,6 +19,7 @@
 #include <QDrag>
 #include <QDragEnterEvent>
 #include <QDropEvent>
+#include <QPainter>
 #include <Qsci/qscicommandset.h>
 #include <Qsci/qscilexer.h>
 #include <QCheckBox>
@@ -159,10 +160,28 @@ SonicPiScintilla::SonicPiScintilla(SonicPiLexer *lexer, SonicPiTheme *theme, QSt
 
 }
 
+void SonicPiScintilla::paintEvent( QPaintEvent *event)
+{
+    QPainter painter(this->viewport());
+    painter.setCompositionMode( QPainter::CompositionMode_Clear );
+    painter.setPen(Qt::transparent);
+    painter.setBrush(Qt::transparent);
+
+    painter.fillRect(this->viewport()->rect(), Qt::transparent);
+    painter.setCompositionMode( QPainter::CompositionMode_SourceOver);
+    QsciScintillaBase::paintEvent(event);
+    painter.end();
+}
+
 void SonicPiScintilla::redraw(){
   mutex->lock();
   setMarginsBackgroundColor(theme->color("MarginBackground"));
   setMarginsForegroundColor(theme->color("MarginForeground"));
+  
+  QColor selBack = theme->color("SelectionBackground");
+  selBack.setAlpha(100);
+  setSelectionBackgroundColor(selBack);
+  
   setSelectionBackgroundColor(theme->color("SelectionBackground"));
   setSelectionForegroundColor(theme->color("SelectionForeground"));
   setCaretLineBackgroundColor(theme->color("CaretLineBackground"));
@@ -175,6 +194,8 @@ void SonicPiScintilla::redraw(){
 
 void SonicPiScintilla::highlightAll(){
   mutex->lock();
+  QColor back = theme->color("CaretLineBackground");
+  back.setAlpha(100);
   setCaretLineBackgroundColor("deeppink");
   mutex->unlock();
 }
@@ -183,6 +204,14 @@ void SonicPiScintilla::unhighlightAll(){
   mutex->lock();
   setCaretLineBackgroundColor(theme->color("CaretLineBackground"));
   mutex->unlock();
+}
+
+void SonicPiScintilla::wordWrapOn(){
+    setWrapMode(WrapMode::WrapWord);
+}
+
+void SonicPiScintilla::wordWrapOff(){
+    setWrapMode(WrapMode::WrapNone);
 }
 
 void SonicPiScintilla::hideLineNumbers(){
