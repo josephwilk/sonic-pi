@@ -44,6 +44,8 @@ class SonicPiScintilla : public QsciScintilla
     void copyClear();
     void hideLineNumbers();
     void showLineNumbers();
+	void wordWrapOn();
+    void wordWrapOff();
     void setLineErrorMarker(int lineNumber);
     void clearLineMarkers();
     void replaceLine(int lineNumber, QString newLine);
@@ -67,6 +69,9 @@ class SonicPiScintilla : public QsciScintilla
     void replaceBuffer(QString content, int line, int index, int first_line);
     void newlineAndIndent();
     void completeListOrNewlineAndIndent();
+	
+protected:
+    void paintEvent( QPaintEvent *event);
 
  private:
     void addKeyBinding(QSettings &qs, int cmd, int key);

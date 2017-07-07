@@ -22,6 +22,7 @@ class SonicPiLog : public QPlainTextEdit
 {
     Q_OBJECT
 public:
+	int alphaLevel = 0;
     explicit SonicPiLog(QWidget *parent = 0);
     bool forceScroll;
 
@@ -44,6 +45,7 @@ public:
 signals:
 
 public slots:
+	void setAlphaLevel(int level);
     void setTextColor(QColor c);
     void setTextBackgroundColor(QColor c);
     void setTextBgFgColors(QColor fg, QColor bg);
@@ -53,6 +55,7 @@ public slots:
     void appendPlainText(QString text);
 
 protected:
+	void paintEvent(QPaintEvent *e);
 };
 
 Q_DECLARE_METATYPE(SonicPiLog::MultiMessage)
