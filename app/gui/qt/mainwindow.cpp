@@ -626,7 +626,7 @@ void MainWindow::setupWindowStructure() {
   connect(signalMapper, SIGNAL(mapped(int)), this, SLOT(changeTab(int)));
   connect(signalMapper, SIGNAL(mapped(QObject*)), this, SLOT(completeSnippetListOrIndentLine(QObject*)));
 
-  QFont font("Monospace");
+  QFont font("Monofur");
   font.setStyleHint(QFont::Monospace);
   lexer->setDefaultFont(font);
 
@@ -1501,6 +1501,8 @@ void MainWindow::initPrefsWindow() {
   QVBoxLayout *automation_box_layout = new QVBoxLayout;
   QGridLayout *gridEditorPrefs = new QGridLayout;
   editor_display_box_layout->addWidget(show_line_numbers);
+  editor_display_box_layout->addWidget(wrap_mode);
+  editor_display_box_layout->addWidget(full_screen);
   editor_display_box_layout->addWidget(show_log);
   editor_display_box_layout->addWidget(show_incoming_osc_log);
   editor_display_box_layout->addWidget(show_buttons);
