@@ -4963,6 +4963,11 @@ Also, if you wish your synth to work with Sonic Pi's automatic stereo sound infr
       def sample_find_candidates(*args)
         @sample_loader.find_candidates(*args)
       end
+      
+      def _
+        nil
+      end
+      
     end
 
   end

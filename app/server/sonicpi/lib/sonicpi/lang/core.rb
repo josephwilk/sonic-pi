@@ -1561,10 +1561,10 @@ end"
 
 
 
-      def line(start, finish, *args)
+      def line(start, finish, num_slices, *args)
         return [].ring if start == finish
         args_h = resolve_synth_opts_hash_or_array(args)
-        num_slices = args_h[:steps] || 4
+        num_slices = num_slices || 32
         inclusive = args_h[:inclusive]
 
         raise ArgumentError, "steps: opt for fn line should be a positive non-zero whole number" unless num_slices > 0
@@ -1588,8 +1588,8 @@ end"
           memoize: true,
           doc:            "Create a ring buffer representing a straight line between start and finish of num_slices elements. Num slices defaults to `8`. Indexes wrap around positively and negatively. Similar to `range`.",
           examples:       [
-        "(line 0, 4, steps: 4)    #=> (ring 0.0, 1.0, 2.0, 3.0)",
-        "(line 5, 0, steps: 5)    #=> (ring 5.0, 4.0, 3.0, 2.0, 1.0)",
+        "(line 0, 4, 4)    #=> (ring 0.0, 1.0, 2.0, 3.0)",
+        "(line 5, 0, 5)    #=> (ring 5.0, 4.0, 3.0, 2.0, 1.0)",
         "(line 0, 3, inclusive: true) #=> (ring 0.0, 1.0, 2.0, 3.0)"
       ]
 
@@ -1728,9 +1728,9 @@ end"
 
 
 
-
-      def ramp(*args)
-        SonicPi::Core::RampVector.new(args)
+      def ramp(start_val, end_val, steps)
+        l = line(start_val, end_val, steps)
+        SonicPi::Core::RampVector.new(l)
       end
       doc name:           :ramp,
           introduced:     Version.new(2,6,0),

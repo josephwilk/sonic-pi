@@ -41,8 +41,8 @@ SP_ROOT=`pwd`
 cd qwt-6.1.2
 /usr/local/opt/qt5/bin/qmake qwt.pro
 make
-sudo make install
-sudo cp /usr/local/qwt-6.1.2/features/* /usr/local/opt/qt5/mkspecs/features/
+#sudo make install
+#sudo cp /usr/local/qwt-6.1.2/features/* /usr/local/opt/qt5/mkspecs/features/
 
 #download and install aubio (with libsndfile support)
 cd SP_APP_SRC
@@ -69,9 +69,9 @@ mkdir -p ../../server/native/osx/ruby/bin
 
 #on subsequent runs after initial install, can usually restart from here if no gems have been updated
 #prepare documentation
-../../server/bin/i18n-tool.rb -t
-cp -f ruby_help.tmpl ruby_help.h
-../../server/bin/qt-doc.rb -o ruby_help.h
+#../../server/bin/i18n-tool.rb -t
+#cp -f ruby_help.tmpl ruby_help.h
+#../../server/bin/qt-doc.rb -o ruby_help.h
 /usr/local/opt/qt5/bin/lrelease SonicPi.pro
 /usr/local/opt/qt5/bin/qmake SonicPi.pro
 make
