@@ -387,9 +387,14 @@ MainWindow::MainWindow(QApplication &app, bool i18n, QSplashScreen* splash)
   createToolBar();
   createStatusBar();
   createInfoPane();
-  setWindowTitle(tr("Sonic Pi"));
+  setWindowTitle(tr("HACKEDonic Pi"));
   initPrefsWindow();
   readSettings();
+
+  wrap_mode->setChecked(true);
+  auto_indent_on_run->setChecked(false);
+  show_buttons->setChecked(false);
+
   updateTabsVisibility();
   updateButtonVisibility();
   updateLogVisibility();
@@ -397,7 +402,7 @@ MainWindow::MainWindow(QApplication &app, bool i18n, QSplashScreen* splash)
 
   // The implementation of this method is dynamically generated and can
   // be found in ruby_help.h:
-  initDocsWindow();
+  //initDocsWindow();
 
   //setup autocompletion
   autocomplete->loadSamples(sample_path);
@@ -425,9 +430,16 @@ MainWindow::MainWindow(QApplication &app, bool i18n, QSplashScreen* splash)
     splashClose();
 
     showWindow();
-    toggleScope();
+    //toggleScope();
+	
+    show_scopes->setChecked(false);
+    scope();
+	
+	
     updatePrefsIcon();
     updateDarkMode();
+	full_screen->setChecked(true); //Force fullscreen.
+		
     updateFullScreenMode();
     showWelcomeScreen();
     changeRPSystemVol(system_vol_slider->value(), 1);
@@ -706,6 +718,7 @@ void MainWindow::setupWindowStructure() {
   connect(prefsWidget, SIGNAL(visibilityChanged(bool)), this, SLOT(updatePrefsIcon()));
 
   outputWidget = new QDockWidget(tr("Log"), this);
+  outputWidget->setTitleBarWidget(new QWidget());
   outputWidget->setFocusPolicy(Qt::NoFocus);
   outputWidget->setFeatures(QDockWidget::NoDockWidgetFeatures);
   outputWidget->setAllowedAreas(Qt::RightDockWidgetArea);
@@ -763,6 +776,8 @@ void MainWindow::setupWindowStructure() {
   addDockWidget(Qt::BottomDockWidgetArea, docWidget);
   docWidget->hide();
 
+  statusBar()->hide(); //MAX SCREEN
+
   //Currently causes a segfault when dragging doc pane out of main
   //window:
   connect(docWidget, SIGNAL(visibilityChanged(bool)), this, SLOT(helpVisibilityChanged()));
@@ -811,10 +826,10 @@ void MainWindow::updateFullScreenMode(){
 
 #if QT_VERSION >= 0x050400
     //requires Qt5
-    this->windowHandle()->setScreen(qApp->screens()[currentScreen]);
+    //this->windowHandle()->setScreen(qApp->screens()[currentScreen]);
 #endif
 
-    this->setWindowState(Qt::WindowFullScreen);
+    this->setWindowState(Qt::WindowMaximized);
     this->show();
   }
   else {
@@ -1574,7 +1589,7 @@ void MainWindow::initPrefsWindow() {
   show_scopes->setToolTip(tr("Toggle the visibility of the audio oscilloscopes."));
   show_scope_axes = new QCheckBox(tr("Show Axes"));
   show_scope_axes->setToolTip(tr("Toggle the visibility of the axes for the audio oscilloscopes"));
-  show_scope_axes->setChecked(true);
+  show_scope_axes->setChecked(false);
   scope_box_kinds->setLayout(scope_box_kinds_layout);
   scope_box_kinds->setToolTip(tr("The audio oscilloscope comes in three flavours which may\nbe viewed independently or all together:\n\nLissajous - illustrates the phase relationship between the left and right channels\nMono - shows a combined view of the left and right channels (using RMS)\nStereo - shows two independent scopes for left and right channels"));
   scope_box_layout->addWidget(show_scopes);
@@ -1658,10 +1673,10 @@ void MainWindow::initPrefsWindow() {
 
   //show_left_scope->setChecked( scopeInterface->enableScope( "Left", settings.value("prefs/scope/show-left", true).toBool() ) );
   //show_right_scope->setChecked( scopeInterface->enableScope( "Right", settings.value("prefs/scope/show-right", true).toBool() ) );
-  show_scope_axes->setChecked( scopeInterface->setScopeAxes( settings.value("prefs/scope/show-axes", false).toBool() ) );
-  show_scopes->setChecked( scopeInterface->setScopeAxes( settings.value("prefs/scope/show-scopes", true).toBool() ) );
+  //show_scope_axes->setChecked( scopeInterface->setScopeAxes( settings.value("prefs/scope/show-axes", false).toBool() ) );
+  //show_scopes->setChecked( scopeInterface->setScopeAxes( settings.value("prefs/scope/show-scopes", true).toBool() ) );
   show_incoming_osc_log->setChecked( settings.value("prefs/show_incoming_osc_log", true).toBool());
-  pro_icons_check->setChecked( settings.value("prefs/toolbar/pro", false).toBool());
+  //pro_icons_check->setChecked( settings.value("prefs/toolbar/pro", false).toBool());
 
 
 

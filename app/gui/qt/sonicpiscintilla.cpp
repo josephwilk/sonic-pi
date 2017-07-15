@@ -57,19 +57,19 @@ SonicPiScintilla::SonicPiScintilla(SonicPiLexer *lexer, SonicPiTheme *theme, QSt
   addOtherKeyBinding(settings, QsciCommand::LineUp, Qt::Key_Up);
   addKeyBinding(settings, QsciCommand::LineUpExtend, Qt::Key_Up | Qt::SHIFT);
 
-  addKeyBinding(settings, QsciCommand::CharRight, Qt::Key_F | SPi_CTRL);
+  addKeyBinding(settings, QsciCommand::CharRight, Qt::Key_B | SPi_CTRL);
   addOtherKeyBinding(settings, QsciCommand::CharRight, Qt::Key_Right);
   addKeyBinding(settings, QsciCommand::CharRightExtend, Qt::Key_Right | Qt::SHIFT);
 
-  addKeyBinding(settings, QsciCommand::WordRight, Qt::Key_F | SPi_META);
+  addKeyBinding(settings, QsciCommand::WordRight, Qt::Key_B | SPi_META);
   addOtherKeyBinding(settings, QsciCommand::WordRight, Qt::Key_Right | SPi_CTRL);
   addKeyBinding(settings, QsciCommand::WordRightExtend, Qt::Key_Right | SPi_CTRL | Qt::SHIFT);
 
-  addKeyBinding(settings, QsciCommand::CharLeft, Qt::Key_B | SPi_CTRL);
+  addKeyBinding(settings, QsciCommand::CharLeft, Qt::Key_F | SPi_CTRL);
   addOtherKeyBinding(settings, QsciCommand::CharLeft, Qt::Key_Left);
   addKeyBinding(settings, QsciCommand::CharLeftExtend, Qt::Key_Left | Qt::SHIFT);
 
-  addKeyBinding(settings, QsciCommand::WordLeft, Qt::Key_B | SPi_META);
+  addKeyBinding(settings, QsciCommand::WordLeft, Qt::Key_F | SPi_META);
   addOtherKeyBinding(settings, QsciCommand::WordLeft, Qt::Key_Left | SPi_CTRL);
   addKeyBinding(settings, QsciCommand::WordLeftExtend, Qt::Key_Left | SPi_CTRL | Qt::SHIFT);
 

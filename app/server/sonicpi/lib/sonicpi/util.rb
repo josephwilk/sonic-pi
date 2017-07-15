@@ -336,9 +336,9 @@ module SonicPi
         raise "Please implement me!"
       when :osx
         erlang_bin_path = File.join(native_path, "erlang", "erl")
-        "\"#{ruby_path}\" \"#{erlang_bin_path}\""
+        #"\"#{ruby_path}\" \"#{erlang_bin_path}\""
         # Uncomment this if you want to use the system Erlang:
-        #"erl"
+        "erl"
       when :raspberry, :linux
         "erl"
       end
