@@ -192,11 +192,11 @@ MainWindow::MainWindow(QApplication &app, bool i18n, QSplashScreen* splash)
   if(protocol == TCP){
     clientSock = new QTcpSocket(this);
   }
-  
+
   this->setWindowFlags(Qt::Widget | Qt::FramelessWindowHint | Qt::NoDropShadowWindowHint);
   this->setAttribute(Qt::WA_NoSystemBackground, true);
   this->setAttribute(Qt::WA_TranslucentBackground, true);
-  
+
   QProcess* determineSendPortNumber = new QProcess();
   QStringList send_args;
   send_args << port_discovery_path << "gui-send-to-server";
@@ -422,6 +422,8 @@ MainWindow::MainWindow(QApplication &app, bool i18n, QSplashScreen* splash)
   startRubyServer();
   if (waitForServiceSync()){
     // We have a connection! Finish up loading app...
+    createTmpBufferDir();
+
     honourPrefs();
     loadWorkspaces();
     requestVersion();
@@ -431,15 +433,15 @@ MainWindow::MainWindow(QApplication &app, bool i18n, QSplashScreen* splash)
 
     showWindow();
     //toggleScope();
-	
+
     show_scopes->setChecked(false);
     scope();
-	
-	
+
+
     updatePrefsIcon();
     updateDarkMode();
 	full_screen->setChecked(true); //Force fullscreen.
-		
+
     updateFullScreenMode();
     showWelcomeScreen();
     changeRPSystemVol(system_vol_slider->value(), 1);
@@ -1495,11 +1497,11 @@ void MainWindow::initPrefsWindow() {
   show_tabs->setToolTip(tr("Toggle visibility of the buffer selection tabs."));
   full_screen = new QCheckBox(tr("Full screen"));
   full_screen->setToolTip(tooltipStrShiftMeta('F', tr("Toggle full screen mode.")));
-  
+
   wrap_mode = new QCheckBox(tr("Word wrap"));
   wrap_mode->setToolTip(tr("Wrap long lines. Useful to avoid lots of scrolling."));
   connect(wrap_mode, SIGNAL(clicked()), this, SLOT(changeWrapMode()));
-    
+
   dark_mode = new QCheckBox(tr("Dark mode"));
   dark_mode->setToolTip(tooltipStrShiftMeta('M', tr("Toggle dark mode.")) + QString(tr("\nDark mode is perfect for live coding in night clubs.")));
   connect(show_line_numbers, SIGNAL(clicked()), this, SLOT(changeShowLineNumbers()));
@@ -1872,6 +1874,101 @@ void MainWindow::runBufferIdx(int idx)
   QMetaObject::invokeMethod(tabs, "setCurrentIndex", Q_ARG(int, idx));
   runCode();
 }
+
+void MainWindow::createTmpBufferDir() {
+  //Create temporary file store (if possible) for sharing buffers locally with server.
+  //Attempt to use a standard dir SonicPiGUIBufferStore - but if that cant' be
+  //created, then attempt to use a unique dir name.
+  tmp_file_store = QDir::toNativeSeparators(QDir::tempPath() + "/" + "sonic-pi-gui-buffer-store");
+  std::cout << "[GUI] - Making tmp dir for sending buffers locally: " << tmp_file_store.toStdString() << std::endl;
+  tmpFileStoreAvailable = QDir().mkdir(tmp_file_store);
+  if(!tmpFileStoreAvailable) {
+    std::cout << "[GUI] - Unable to create tmp dir: " << tmp_file_store.toStdString() << std::endl;
+    tmp_file_store = QDir::toNativeSeparators(QDir::tempPath() + "/" + "sonic-pi-gui-buffer-store-" + guiID.mid(1, 13));
+    std::cout << "[GUI] - Making unique tmp dir for sending buffers locally: " << tmp_file_store.toStdString() << std::endl;
+    tmpFileStoreAvailable = QDir().mkdir(tmp_file_store);
+    if(!tmpFileStoreAvailable) {
+      std::cout << "[GUI] - Still unable to create tmp dir: " << tmp_file_store.toStdString() << std::endl;
+    }
+  }
+}
+
+void MainWindow::runCodeWithFile()
+{
+  // revert back to using pure OSC
+  // if we don't have access to the
+  // temporary file store
+  if(!tmpFileStoreAvailable) {
+    return runCode();
+  }
+
+  std::string filename = workspaceFilename( (SonicPiScintilla*)tabs->currentWidget());
+  QString tmppath = QDir::toNativeSeparators(tmp_file_store + "/" + QString::fromStdString(filename));
+
+  QFile outFile(tmppath);
+  outFile.open(QIODevice::WriteOnly | QIODevice::Text);
+
+  // revert back to using pure OSC
+  // if we can't open the temporary file
+  if(!outFile.isOpen()){
+    std::cout << "[GUI] - unable to open " << tmppath.toStdString() << " to transmit buffer code. Falling back to UDP OSC..." << std::endl;
+    return runCode();
+  }
+
+  scopeInterface->resume();
+  update();
+  if(auto_indent_on_run->isChecked()) {
+    beautifyCode();
+  }
+  SonicPiScintilla *ws = (SonicPiScintilla*)tabs->currentWidget();
+  ws->highlightAll();
+  lexer->highlightAll();
+  ws->clearLineMarkers();
+  resetErrorPane();
+  statusBar()->showMessage(tr("Running Code..."), 1000);
+  QString code = ws->text();
+  Message msg("/save-and-run-buffer-via-local-file");
+  msg.pushStr(guiID.toStdString());
+
+  msg.pushStr(filename);
+
+  if(!print_output->isChecked()) {
+    code = "use_debug false #__nosave__ set by Qt GUI user preferences.\n" + code ;
+  }
+
+  if(!log_cues->isChecked()) {
+    code = "use_cue_logging false #__nosave__ set by Qt GUI user preferences.\n" + code ;
+  }
+
+  if(check_args->isChecked()) {
+    code = "use_arg_checks true #__nosave__ set by Qt GUI user preferences.\n" + code ;
+  }
+
+  if(enable_external_synths_cb->isChecked()) {
+     code = "use_external_synths true #__nosave__ set by Qt GUI user preferences.\n" + code ;
+  }
+
+  if(synth_trigger_timing_guarantees_cb->isChecked()) {
+     code = "use_timing_guarantees true #__nosave__ set by Qt GUI user preferences.\n" + code ;
+  }
+
+  if(clear_output_on_run->isChecked()){
+    outputPane->clear();
+  }
+
+
+  QTextStream outStream(&outFile);
+  outStream << code;
+  outFile.close();
+
+  msg.pushStr(tmppath.toStdString());
+  msg.pushStr(filename);
+  sendOSC(msg);
+
+  QTimer::singleShot(500, this, SLOT(unhighlightCode()));
+}
+
+
 
 void MainWindow::runCode()
 {
@@ -2797,8 +2894,8 @@ void MainWindow::createToolBar()
   // Run
   runAct = new QAction(QIcon(":/images/toolbar/default/run.png"), tr("Run"), this);
   setupAction(runAct, 'R', tr("Run the code in the current buffer"),
-	      SLOT(runCode()));
-  new QShortcut(QKeySequence(metaKeyModifier() + Qt::Key_Return), this, SLOT(runCode()));
+	      SLOT(runCodeWithFile()));
+  new QShortcut(QKeySequence(metaKeyModifier() + Qt::Key_Return), this, SLOT(runCodeWithFile()));
 
   // Stop
   stopAct = new QAction(QIcon(":/images/toolbar/default/stop.png"), tr("Stop"), this);
