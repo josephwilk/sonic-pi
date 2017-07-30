@@ -192,19 +192,11 @@ MainWindow::MainWindow(QApplication &app, bool i18n, QSplashScreen* splash)
   if(protocol == TCP){
     clientSock = new QTcpSocket(this);
   }
-<<<<<<< HEAD
 
   this->setWindowFlags(Qt::Widget | Qt::FramelessWindowHint | Qt::NoDropShadowWindowHint);
   this->setAttribute(Qt::WA_NoSystemBackground, true);
   this->setAttribute(Qt::WA_TranslucentBackground, true);
 
-=======
-  
-  this->setWindowFlags(Qt::Widget | Qt::FramelessWindowHint | Qt::NoDropShadowWindowHint);
-  this->setAttribute(Qt::WA_NoSystemBackground, true);
-  this->setAttribute(Qt::WA_TranslucentBackground, true);
-  
->>>>>>> 0ef37d25fe623efd34546c73f4e7e5e3dce82055
   QProcess* determineSendPortNumber = new QProcess();
   QStringList send_args;
   send_args << port_discovery_path << "gui-send-to-server";
@@ -441,7 +433,6 @@ MainWindow::MainWindow(QApplication &app, bool i18n, QSplashScreen* splash)
 
     showWindow();
     //toggleScope();
-<<<<<<< HEAD
 
     show_scopes->setChecked(false);
     scope();
@@ -451,17 +442,6 @@ MainWindow::MainWindow(QApplication &app, bool i18n, QSplashScreen* splash)
     updateDarkMode();
 	full_screen->setChecked(true); //Force fullscreen.
 
-=======
-	
-    show_scopes->setChecked(false);
-    scope();
-	
-	
-    updatePrefsIcon();
-    updateDarkMode();
-	full_screen->setChecked(true); //Force fullscreen.
-		
->>>>>>> 0ef37d25fe623efd34546c73f4e7e5e3dce82055
     updateFullScreenMode();
     showWelcomeScreen();
     changeRPSystemVol(system_vol_slider->value(), 1);
@@ -1517,19 +1497,11 @@ void MainWindow::initPrefsWindow() {
   show_tabs->setToolTip(tr("Toggle visibility of the buffer selection tabs."));
   full_screen = new QCheckBox(tr("Full screen"));
   full_screen->setToolTip(tooltipStrShiftMeta('F', tr("Toggle full screen mode.")));
-<<<<<<< HEAD
 
   wrap_mode = new QCheckBox(tr("Word wrap"));
   wrap_mode->setToolTip(tr("Wrap long lines. Useful to avoid lots of scrolling."));
   connect(wrap_mode, SIGNAL(clicked()), this, SLOT(changeWrapMode()));
 
-=======
-  
-  wrap_mode = new QCheckBox(tr("Word wrap"));
-  wrap_mode->setToolTip(tr("Wrap long lines. Useful to avoid lots of scrolling."));
-  connect(wrap_mode, SIGNAL(clicked()), this, SLOT(changeWrapMode()));
-    
->>>>>>> 0ef37d25fe623efd34546c73f4e7e5e3dce82055
   dark_mode = new QCheckBox(tr("Dark mode"));
   dark_mode->setToolTip(tooltipStrShiftMeta('M', tr("Toggle dark mode.")) + QString(tr("\nDark mode is perfect for live coding in night clubs.")));
   connect(show_line_numbers, SIGNAL(clicked()), this, SLOT(changeShowLineNumbers()));
