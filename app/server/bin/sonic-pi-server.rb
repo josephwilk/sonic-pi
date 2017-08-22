@@ -136,14 +136,14 @@ end
 
 
 at_exit do
-  STDOUT.puts "Server is exiting."
+  STDOUT.puts "I'm afraid."
   begin
-    STDOUT.puts "Shutting down GUI..."
+    STDOUT.puts "I'm afraid Dave..."
     gui.send("/exited")
   rescue Errno::EPIPE => e
     STDOUT.puts "GUI not listening."
   end
-  STDOUT.puts "Goodbye :-)"
+  STDOUT.puts "d[-_-]b"
 end
 
 user_methods = Module.new
