@@ -249,6 +249,8 @@ end
 osc_server.add_method("/stop-all-jobs") do |args|
   gui_id = args[0]
   sp.__stop_jobs
+  #Stop all external synths.
+  sp.__spider_eval("midi_cc('C-2', channel: 16)", {workspace: "FAKE"})
 end
 
 osc_server.add_method("/load-buffer") do |args|
