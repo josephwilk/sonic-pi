@@ -3684,7 +3684,8 @@ end",
         tonic = 0
         name = :minor
         if opts.size == 0
-          name = tonic_or_name
+          tonic = tonic_or_name
+          name = /[[:upper:]]/.match(tonic_or_name.to_s[0]) ? :major : :minor
         elsif (opts.size == 1) && opts[0].is_a?(Hash)
           name = tonic_or_name
         else
