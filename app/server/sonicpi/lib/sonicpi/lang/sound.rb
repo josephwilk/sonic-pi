@@ -3702,7 +3702,7 @@ end",
         else
           c = Chord.new(tonic, name, opts[:num_octaves])
         end
-        c = chord_invert(c, opts[:invert]) if opts[:invert]
+        c = chord_invert(c, opts[:i]) if opts[:i]
         return c.ring
       end
       doc name:          :chord,
