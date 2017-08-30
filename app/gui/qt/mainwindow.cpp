@@ -632,7 +632,18 @@ void MainWindow::setupWindowStructure() {
     QShortcut *downcaseWord= new QShortcut(metaKey('l'), workspace);
     connect(downcaseWord, SIGNAL(activated()), workspace, SLOT(downcaseWordOrSelection()));
 
-    QString w = QString(tr("Buffer %1")).arg(QString::number(ws));
+    QVector<QString> stringVector(10, "♥️");
+    stringVector[0] = "🤖";
+    stringVector[1] = "👂🏻";
+    stringVector[2] = "🦄";
+    stringVector[3] = "☠️";
+    stringVector[4] = "💥";
+    stringVector[5] = "💩";
+    stringVector[6] = "👾";
+    stringVector[7] = "🐙";
+    stringVector[8] = "🐒";
+    stringVector[9] = "🐬";
+    QString w = stringVector[ws];//QString(tr(stringVector[ws]+"%1")).arg(QString::number(ws));
     workspaces[ws] = workspace;
     tabs->addTab(workspace, w);
   }
