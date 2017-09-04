@@ -539,7 +539,7 @@ void MainWindow::setupWindowStructure() {
 
     SonicPiScintilla *workspace = new SonicPiScintilla(lexer, theme, fileName, oscSender, auto_indent_on_run);
 
-    workspace->setObjectName(QString("Buffer %1").arg(ws));
+    workspace->setObjectName(QString("B%1").arg(ws));
 
     //tab completion when in list
     QShortcut *indentLine = new QShortcut(QKeySequence("Tab"), workspace);
@@ -1902,6 +1902,16 @@ void MainWindow::createTmpBufferDir() {
       std::cout << "[GUI] - Still unable to create tmp dir: " << tmp_file_store.toStdString() << std::endl;
     }
   }
+}
+
+std::string MainWindow::workspaceFilename(SonicPiScintilla* text)
+{
+  for(int i = 0; i < workspace_max; i++) {
+    if(text == workspaces[i]) {
+      return "workspace_" + number_name(i);
+    }
+  }
+  return "default";
 }
 
 void MainWindow::runCodeWithFile()
