@@ -139,7 +139,7 @@ SonicPiScintilla::SonicPiScintilla(SonicPiLexer *lexer, SonicPiTheme *theme, QSt
   setMarginsForegroundColor(theme->color("MarginForeground"));
   setMarginsFont(QFont("Hack", 15, -1, true));
   setUtf8(true);
-  setText("# Loading previous buffer contents. Please wait...");
+  setText("# I ate your code...");
   setLexer((QsciLexer *)lexer);
 
   markerDefine(RightArrow, 8);
