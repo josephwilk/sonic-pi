@@ -1730,8 +1730,15 @@ end"
 
 
 
-      def line(start, finish, num_slices, *args)
+      def line(start, finish, *args)
+        num_slices = 0
         return [].ring if start == finish
+        if(args && args[0].is_a?(Numeric))
+          num_slices = args[0]
+          args = args[1..-1]
+        else
+          num_slices = finish-start
+        end
         args_h = resolve_synth_opts_hash_or_array(args)
         num_slices = num_slices || 32
         inclusive = args_h[:inclusive]
