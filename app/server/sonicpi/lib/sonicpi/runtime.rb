@@ -1180,32 +1180,7 @@ module SonicPi
     end
 
     def __print_boot_messages
-      __info [
-"Somewhere in the world
-   the sun is shining
-   for you right now.",
-"Hello, it's lovely to see
-   you again. I do hope that
-   you're well.",
-"Turn your head towards the sun
-   and the shadows
-   will fall
-   behind you.",
-"Remember, with live coding music
-   there are no mistakes
-   only opportunities to learn
-   and improve.",
-"The only secret to mastering
-   live coding is practice.
-   Lots and lots of practice.",
-"When you share
-   your work and ideas
-   freely with others
-   the whole world benefits." ].sample, 1
-
-      __info "Let the Live Coding begin..."
-
-
+      __info ["d[-_-]b", "d[*_*]b"].sample, 1
       __print_version_outdated_info if @version < @server_version
       msg = @settings.get(:message) || ""
       msg = msg.strip
