@@ -208,12 +208,13 @@ end
 
 REPL_ELECTRIC_SETUP = "use_cue_logging false #__nosave__\n" +
     "use_debug false  #__nosave__\n" +
+    "use_midi_defaults channel: 1 #__nosave__\n" +
     + "♥️=Straw  #__nosave__\n"+
     + "🌶️=Straw #__nosave__\n" +
     "☠️=@slices #__nosave__\n" +
     "@points ||= 0 #__nosave__\n" +
     "@mode ||= \"points\" #__nosave__\n" +
-    "MAX_POINTS = 100000 #__nosave__\n"
+    "(MAX_POINTS = 100000) unless defined?(MAX_POINTS) #__nosave__\n"
 
 osc_server.add_method("/save-and-run-buffer-via-local-file") do |args|
   gui_id = args[0]
