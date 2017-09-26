@@ -30,6 +30,9 @@ module SonicPi
           raise PreParseError, "You may not use the built-in fn names as variable names.\n You attempted to use: #{fn}"
         end
       end
+      #Lets invent our own Ruby Syntax using REGEXP. What could go wrong?
+      rb.gsub!(/(\s\d+\.)(\z|\n|\s)/, "\\10\\2")        #  2.   => 2.0
+      rb.gsub!(/(\s)(\.\d+)(\z|\n|\s)/, "\\10\\2\\3")   # .3   => 0.3
       rb
     end
   end
