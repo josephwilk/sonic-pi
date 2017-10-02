@@ -178,7 +178,7 @@ begin
 
   # read in init.rb if exists
   if File.exists?(init_path)
-    sp.__spider_eval(File.read(init_path), silent: false)
+    sp.__spider_eval(File.read(init_path), {silent: false, workspace: init_path})
   else
     begin
     File.open(init_path, "w") do |f|
