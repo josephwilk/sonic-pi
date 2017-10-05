@@ -19,6 +19,16 @@ module SonicPi
     class PreParseError < StandardError ; end
 
     def self.preparse(rb, vec_fns)
+      ings = rb.scan(/(\(ing\s+)([^\)]+)(\))/)
+      #puts ings.inspect
+      ings.each do |ing|
+        #puts ing.inspect
+        target = ing[1].split(/\s+/).join(",")
+        new_ings = ing[0] + target + ing[2]
+        old_ings = ing[0] + ing[1] + ing[2]
+        rb.gsub!(old_ings, new_ings)
+      end
+
       vec_fns.each do |fn|
         rb = String.new(rb)
         fn = fn[:name].to_s

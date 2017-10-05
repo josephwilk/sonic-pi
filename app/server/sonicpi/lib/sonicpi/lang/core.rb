@@ -1876,7 +1876,23 @@ end"
         "(ring 1, 2, 3)[-1] #=> 3",
       ]
 
-
+      def ing(*args)
+        SonicPi::Core::RingVector.new(args)
+      end
+      doc name:           :ing,
+          introduced:     Version.new(2,2,0),
+          summary:        "Create a ring buffer",
+          args:           [[:list, :array]],
+          returns:        :ring,
+          opts:           nil,
+          accepts_block:  false,
+          doc:            "Create a new immutable ring buffer from args. Indexes wrap around positively and negatively",
+          examples:       [
+        "(ing 1 2 3)[0] #=> 1",
+        "(ing 1 2 3)[1] #=> 2",
+        "(ing 1 2 3)[3] #=> 1",
+        "(ing 1 2 3)[-1] #=> 3",
+      ]
 
       def map(*args)
         if args.size > 1
