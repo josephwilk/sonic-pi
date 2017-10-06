@@ -41,8 +41,8 @@ module SonicPi
         end
       end
       #Lets invent our own Ruby Syntax using REGEXP. What could go wrong?
-      rb.gsub!(/(\s\d+\.)([^\d]{1})/, "\\10\\2")          #  2.   => 2.0
-      rb.gsub!(/([^\d]{1})(\.\d+)(\z|\n|\s|\)|)/, "\\10\\2\\3")   # .3   => 0.3
+      rb.gsub!(/(\s\d+\.)(\z|\n|\s)/, "\\10\\2")          #  2.   => 2.0
+      rb.gsub!(/([^\d\.]{1})(\.\d+)(\z|\n|\s|\)|)/, "\\10\\2\\3")   # .3   => 0.3
       #rb.gsub!(/\(dring ([^\)]+)\)/, "(ring %W{\\1})")
       rb
     end
