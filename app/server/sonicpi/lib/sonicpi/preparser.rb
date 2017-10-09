@@ -18,26 +18,23 @@ module SonicPi
 
     class PreParseError < StandardError ; end
 
-    def self.preparse(rb, vec_fns)
+    def self.comma_less(rb)
       ings = rb.scan(/(\(ing\s+|\(nit\s+|\(ine\s+)([^\)]+)(\))/)
-      #ings = rb.scan(/(\(ing\s+)([^\)]+)(\))/)
-      #puts ings.inspect
       ings.each do |ing|
-        #puts ing.inspect
-        target = ing[1].split(/\n+/)
-        target = target.map {|t|
-          rs = t.split(/#[^{]{1}/)
-          rs[0]
-        }.flatten.join("\n")
-        target = target.split(/\s+/).join(",")
+        target = ing[1].split(/\n+/).
+                 map {|line| line.split(/#[^{]{1}/)[0]}.join("\n").
+                 gsub(/(\w+)/, "\\1,")
         new_ings = ing[0] + target + ing[2]
         old_ings = ing[0] + ing[1] + ing[2]
         #puts "newing: #{new_ings}"
         #puts "olding: #{old_ings}"
         rb.gsub!(old_ings, new_ings)
       end
+      rb
+    end
 
-
+    def self.preparse(rb, vec_fns)
+      rb = PreParser.comma_less(rb)
       vec_fns.each do |fn|
         rb = String.new(rb)
         fn = fn[:name].to_s
