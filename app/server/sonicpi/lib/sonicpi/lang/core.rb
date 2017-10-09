@@ -1531,9 +1531,9 @@ end"
         "(stretch [:e2, :c3], 1, [:c2, :d3], 2) #=> (ring :e2, :c3, :c2, :c2, :d3, :d3)"
       ]
 
-
-
-
+      def nit(*args)
+        knit(*args)
+      end
       def knit(*args)
         raise ArgumentError, "knit must have a even number of arguments, you passed: #{args.size} - #{args.inspect}" unless args.size.even?
         res = []
@@ -1769,8 +1769,23 @@ end"
         "(line 0, 3, inclusive: true) #=> (ring 0.0, 1.0, 2.0, 3.0)"
       ]
 
-
-
+      def ine(start, finish, *args)
+        line(start, finish, *args)
+      end
+      doc name:           :ine,
+          introduced:     Version.new(2,5,0),
+          summary:        "Create a ring buffer representing a straight line",
+          args:           [[:start, :number], [:finish, :number]],
+          returns:        :ring,
+          opts:           {:steps     => "number of slices or segments along the line",
+                           :inclusive => "boolean value representing whether or not to include finish value in line"},
+          accepts_block:  false,
+          memoize: true,
+          doc:            "Create a ring buffer representing a straight line between start and finish of num_slices elements. Num slices defaults to `8`. Indexes wrap around positively and negatively. Similar to `range`.",
+          examples:       [
+        "(ine 0 4 4)    #=> (ring 0.0, 1.0, 2.0, 3.0)",
+        "(ine 5 0 5)    #=> (ring 5.0, 4.0, 3.0, 2.0, 1.0)"
+      ]
 
       def halves(start, num_halves=1)
         raise ArgumentError, "Start value for halves needs to be a number, got: #{start.inspect}" unless start.is_a?(Numeric)
@@ -1877,7 +1892,7 @@ end"
       ]
 
       def ing(*args)
-        SonicPi::Core::RingVector.new(args)
+        ring(*args)
       end
       doc name:           :ing,
           introduced:     Version.new(2,2,0),
