@@ -21,9 +21,7 @@ module SonicPi
     def self.comma_less(rb)
       ings = rb.scan(/(\(ing\s+|\(nit\s+|\(ine\s+)([^\)]+)(\))/)
       ings.each do |ing|
-        target = ing[1].split(/\n+/).
-                 map {|line| line.split(/#[^{]{1}/)[0]}.join("\n").
-                 gsub(/([^\s]+)/, "\\1,")
+        target = ing[1].gsub(/([^\s]+)/, "\\1,")
         new_ings = ing[0] + target + ing[2]
         old_ings = ing[0] + ing[1] + ing[2]
         #puts "newing: #{new_ings}"
