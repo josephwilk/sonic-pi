@@ -19,6 +19,7 @@ module SonicPi
     class PreParseError < StandardError ; end
 
     def self.comma_less(rb)
+      #Failure cases: (ing (chord :A1)) - Matches the first ) rather than the last.
       ings = rb.scan(/(\(ing\s+|\(nit\s+|\(ine\s+)([^\)]+)(\))/)
       ings.each do |ing|
         target = ing[1].gsub(/,/," ").gsub(/([^\s]+)/, "\\1,")
