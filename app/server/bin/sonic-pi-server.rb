@@ -136,14 +136,33 @@ end
 
 
 at_exit do
-  STDOUT.puts "I'm afraid."
+  STDOUT.puts "                      "
   begin
-    STDOUT.puts "I'm afraid Dave..."
-    gui.send("/exited")
+  STDOUT.puts "                      "
+  STDOUT.puts "                 \\:o/     π=-      π=-"
+  STDOUT.puts "                  █         π=-   π   π=-   π=-"
+  STDOUT.puts "                 .||.      π=-  π=-  π=-"
+
+  STDOUT.puts "        "
+
+  STDOUT.puts "                   :o       ███████  "
+  STDOUT.puts "                  [█]       ███████ "
+  STDOUT.puts "                 .||.       ███████"
+
+  gui.send("/exited")
   rescue Errno::EPIPE => e
     STDOUT.puts "GUI not listening."
   end
-  STDOUT.puts "d[-_-]b"
+  STDOUT.puts "        "
+  STDOUT.puts "                  \\:D"
+  STDOUT.puts "                   █\\"
+  STDOUT.puts "                   |\\"
+  STDOUT.puts "        "
+  STDOUT.puts "                      "
+  STDOUT.puts "                 d[-_-]b     "
+  STDOUT.puts "                   /█\\      "
+  STDOUT.puts "                   .Π.       "
+  STDOUT.puts "                             "
 end
 
 user_methods = Module.new
