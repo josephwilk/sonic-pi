@@ -1472,11 +1472,12 @@ end"
         __osc_send "localhost", @ports[:osc_midi_out_port], *args
       end
 
-      def __midi_message(m) __delayed_message m unless __thread_locals.get(:sonic_pi_suppress_midi_logging)
+      def __midi_message(m)
+        #__delayed_message m unless false#__thread_locals.get(:sonic_pi_suppress_midi_logging)
       end
 
       def __midi_rest_message(m)
-        __delayed_message m
+        #__delayed_message m
       end
 
       def __midi_system_reset(silent=false)

@@ -791,7 +791,7 @@ module SonicPi
             # Force a GC collection before we start making music!
             GC.start
           end
-          __info "Starting run #{id}" unless silent
+          #__info "Starting run #{id}" unless silent
           code = PreParser.preparse(code, SonicPi::Lang::Core.vec_fns)
           code = "in_thread seed: 0 do\n" + code + "\nend"
           firstline -=1
@@ -802,6 +802,7 @@ module SonicPi
             __info("Stopping Run #{id}") unless silent
           end
         rescue SyntaxError => e
+          __info "#{e}"
           __no_kill_block do
             _, line, message = *e.message.match(/\A.*:([0-9]+): (.*)/)
             error_line = ""
@@ -817,7 +818,7 @@ module SonicPi
               err_msg = "[#{w}, line #{line}] \n #{message}"
               error_line = code.lines.to_a[line - firstline] ||  ""
             else
-              line = -1
+              line = 0
               err_msg = "\n #{e.message}"
             end
             __msg_queue.push({type: :job, jobid: id, action: :completed, jobinfo: info})
@@ -848,7 +849,7 @@ module SonicPi
         deregister_job_and_return_subthreads(id)
         @user_jobs.job_completed(id)
         Kernel.sleep default_sched_ahead_time
-        __info "Completed run #{id}" unless silent
+        #__info "Completed run #{id}" unless silent
         unless @user_jobs.any_jobs_running?
           __info "All runs completed" unless silent
           __msg_queue.push({type: :all_jobs_completed})
@@ -932,7 +933,7 @@ module SonicPi
       if name
         if @named_subthreads[name]
           #Don't delay following message, as this method is used for worker thread impl.
-          __info "Thread #{name.inspect} exists: skipping creation"
+          #__info "Thread #{name.inspect} exists: skipping creation"
 
           t.kill
           job_subthread_rm_unmutexed(job_id, t)
@@ -1170,7 +1171,7 @@ module SonicPi
         end
       end
 
-      __info "Welcome to Sonic Pi #{version}", 1
+      __info "Welcome to Sonic Pi [Corrupted]", 1
 
       __info "Running on Ruby v#{RUBY_VERSION}"
 

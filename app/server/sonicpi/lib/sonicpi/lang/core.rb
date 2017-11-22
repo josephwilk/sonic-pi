@@ -2698,9 +2698,9 @@ end
         end
 
         if already_defined
-          __info "Redefining fn #{name.inspect}"
+          #__info "Redefining fn #{name.inspect}"
         else
-          __info "Defining fn #{name.inspect}"
+          #__info "Defining fn #{name.inspect}"
         end
         @user_methods.send(:define_method, name, &block)
       end
