@@ -368,8 +368,9 @@ You may also optionally pass the velocity value as a floating point value betwee
         "midi_note_on :e3, channel: 1, port: \"foo\" #=> Send MIDI note :e3 on only on channel 1 on port \"foo\""
       ]
 
-
-
+      def mod_wheel(*args)
+        midi_cc 1, *args
+      end
 
       def midi_note_off(*args)
         params, opts = split_params_and_merge_opts_array(args)
