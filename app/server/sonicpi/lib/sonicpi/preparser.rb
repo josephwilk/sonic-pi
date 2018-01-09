@@ -22,7 +22,7 @@ module SonicPi
       #Failure cases: (ing (chord :A1)) - Matches the first ) rather than the last.
       ings = rb.scan(/(\(ing\s+|\(nit\s+|\(ine\s+)([^\)]+)(\))/)
       ings.each do |ing|
-        target = ing[1].gsub(/,/," ").gsub(/([^\s]+)/, "\\1,")
+        target = ing[1].gsub(/,/, " ").gsub(/([^\s]+)/, "\\1,")
         new_ings = ing[0] + target + ing[2]
         old_ings = ing[0] + ing[1] + ing[2]
         #puts "newing: #{new_ings}"
@@ -49,6 +49,9 @@ module SonicPi
       rb.gsub!(/(\s\d+\.)(\z|\n|\s)/, "\\10\\2")          #  2.   => 2.0
       rb.gsub!(/([^\d\.]{1})(\.\d+)(\z|\n|\s|\)|)/, "\\10\\2\\3")   # .3   => 0.3
       #rb.gsub!(/\(dring ([^\)]+)\)/, "(ring %W{\\1})")
+      # %l => lpf
+      rb.gsub!(/%l{([^}]+)}/,"{\\1=>:lpf}")
+      rb.gsub!(/%e{([^}]+)}/,"{\\1=>:echo}")
       rb
     end
   end
