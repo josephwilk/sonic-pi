@@ -2789,6 +2789,14 @@ end
   end"]
 
 
+  def no(*args, &block)
+    comment(*args, &block)
+  end
+
+  def yes(*args, &block)
+    uncomment(*args,&block)
+  end
+
 
 
       def print(*msgs)
