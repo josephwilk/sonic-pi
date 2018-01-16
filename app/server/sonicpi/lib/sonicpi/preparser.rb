@@ -52,6 +52,13 @@ module SonicPi
       # %l => lpf
       rb.gsub!(/%l{([^}]+)}/,"{\\1=>:lpf}")
       rb.gsub!(/%e{([^}]+)}/,"{\\1=>:echo}")
+      rb.gsub!(/%r{([^}]+)}/,"{\\1=>:reverb}")
+      rb.gsub!(/%h{([^}]+)}/,"{\\1=>:hpf}")
+      rb.gsub!(/%w{([^}]+)}/,"{\\1=>:wobble}")
+      rb.gsub!(/%b{([^}]+)}/,"{\\1=>:bitcrusher}")
+      rb.gsub!(/%d{([^}]+)}/,"{\\1=>:distortion}")
+      rb.gsub!(/%p{([^}]+)}/,"{\\1=>:pitch_shift}")
+      rb.gsub!(/%k{([^}]+)}/,"{\\1=>:krush}")  
       rb
     end
   end
