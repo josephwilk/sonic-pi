@@ -1352,7 +1352,7 @@ end"
           channels = __resolve_midi_channels(opts)
           ports    = __resolve_midi_ports(opts)
           vel      = __resolve_midi_velocity(vel, opts)
-          sus      = opts.fetch(:sustain, 1).to_f
+          sus      = (opts.fetch(:sustain, 1) || opts.fetch(:sus, 1)).to_f
           rel_vel  = opts.fetch(:release_velocity, 127)
           n        = n.round.min(0).max(127)
           chan     = pp_el_or_list(channels)
