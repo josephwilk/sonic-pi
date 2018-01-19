@@ -2697,10 +2697,10 @@ load_sample dir, /[Bb]ar/ # loads first sample which matches regex /[Bb]ar/ in \
         real_dur = dur * 1.0/(rate.abs) * len
 
         if args_h.has_key?(:sustain) && args_h[:sustain] != -1
-          attack = [0, args_h[:attack].to_f].max
-          decay = [0, args_h[:decay].to_f].max
-          sustain = [0, args_h[:sustain].to_f].max
-          release = [0, args_h[:release].to_f].max
+          attack = [0,  (args_h[:attack]  ||args_h[:atk]).to_f].max
+          decay = [0,   (args_h[:decay]   ||args_h[:dec]).to_f].max
+          sustain = [0, (args_h[:sustain] ||args_h(:sus)).to_f].max
+          release = [0, (args_h[:release] ||args_h[:rel]).to_f].max
           real_dur = [attack + decay + sustain + release, real_dur].min
         end
 
@@ -4514,9 +4514,9 @@ Also, if you wish your synth to work with Sonic Pi's automatic stereo sound infr
 
       def calculate_sustain!(args)
         if args.has_key? :duration and not(args.has_key? :sustain)
-          attack = args.fetch(:attack, 0)
-          decay = args.fetch(:decay, 0)
-          release = args.fetch(:release, 0)
+          attack = (args.fetch(:attack, 0)  || args.fetch(:atk, 0))
+          decay = args.fetch(:decay, 0)     || args.fetch(:dec, 0)
+          release = args.fetch(:release, 0) || args.fetch(:rel, 0)
           duration = args[:duration]
 
           sustain = duration - (attack + decay + release)
@@ -4964,11 +4964,11 @@ Also, if you wish your synth to work with Sonic Pi's automatic stereo sound infr
       def sample_find_candidates(*args)
         @sample_loader.find_candidates(*args)
       end
-      
+
       def _
         nil
       end
-      
+
     end
 
   end
